@@ -1,0 +1,9 @@
+Checking /tmp/workspace/bzssm/showmyjvm/e2e-tests/package.json
+
+Minor   Backwards-compatible features
+ @playwright/test  ^1.48.0  →  ^1.60.0
+
+Major   Potentially breaking API changes
+ @types/node  ^22.0.0  →  ^25.9.1
+
+Run ncu --format group --packageFile /tmp/workspace/bzssm/showmyjvm/e2e-tests/package.json -u to upgrade /tmp/workspace/bzssm/showmyjvm/e2e-tests/package.json
