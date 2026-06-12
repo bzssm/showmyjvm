@@ -1,6 +1,5 @@
-# report-20260612063622
+# JavaScript/TypeScript Dependency Assessment Report
 
-JavaScript/TypeScript Dependency Assessment
 
 ## Component Information
 
