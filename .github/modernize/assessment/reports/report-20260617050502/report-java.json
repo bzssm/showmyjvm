@@ -1,0 +1,1163 @@
+{
+  "version": "1.0.0",
+  "producer": "Java AppCAT CLI",
+  "metadata": {
+    "analysisStartTime": "2026-06-17T05:07:38.774486074Z",
+    "analysisEndTime": "2026-06-17T05:09:30.045788961Z",
+    "status": "Complete",
+    "privacyMode": "Protected",
+    "privacyModeHelpUrl": "https://aka.ms/appcat-privacy-mode",
+    "targetIds": [
+      "azure-appservice",
+      "azure-aks",
+      "azure-container-apps"
+    ],
+    "targetDisplayNames": [
+      "Azure App Service",
+      "Azure Kubernetes Service",
+      "Azure Container Apps"
+    ],
+    "capabilities": [
+      "openjdk25"
+    ],
+    "os": [
+      "linux",
+      "windows"
+    ],
+    "domains": [
+      "cloud-readiness",
+      "java-upgrade"
+    ],
+    "mode": "issue-only",
+    "minimumCveSeverity": "high"
+  },
+  "summary": {
+    "totalProjects": 1,
+    "totalIssues": 8,
+    "totalIncidents": 9,
+    "totalEffort": 29,
+    "charts": {
+      "severity": {
+        "mandatory": 5,
+        "optional": 2,
+        "potential": 2,
+        "information": 0
+      },
+      "category": {
+        "containerization": 1,
+        "java-version-upgrade": 1,
+        "local-resource-access": 1,
+        "remote-communication": 4,
+        "spring-migration": 2
+      }
+    }
+  },
+  "projects": [
+    {
+      "path": ".",
+      "issues": 8,
+      "storyPoints": 29,
+      "properties": {
+        "appName": "showmyjvm-parent",
+        "jdkVersion": "25",
+        "frameworks": [
+          "net9.0",
+          "Quarkus",
+          "Spring Boot",
+          "Spring",
+          "JakartaEE"
+        ],
+        "languages": [
+          "Java",
+          "Python",
+          "JavaScript",
+          "C#",
+          "Smalltalk",
+          "Shell"
+        ],
+        "tools": [
+          "Maven",
+          "NodeJs"
+        ]
+      },
+      "incidents": [
+        {
+          "ruleId": "spring-boot-to-azure-restricted-config-01000",
+          "incidentId": "197a6977-840f-464a-968f-f577aa7bda3d",
+          "location": "spring-boot/src/main/resources/application.properties",
+          "locationKind": "File",
+          "line": 1,
+          "column": 0,
+          "targets": {
+            "azure-container-apps": {
+              "effort": 2,
+              "severity": "potential"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "azure-java-version-02000",
+          "incidentId": "bec78f3f-c77d-45e2-a982-7feb89ee3572",
+          "location": "serverless/azure-functions/pom.xml.versionsBackup",
+          "locationKind": "File",
+          "line": 22,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 8,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 8,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 8,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "spring-boot-to-azure-port-01000",
+          "incidentId": "4ab79126-0959-465e-b350-64a6b6cb942c",
+          "location": "spring-boot/src/main/resources/application.properties",
+          "locationKind": "File",
+          "line": 1,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 1,
+              "severity": "potential"
+            },
+            "azure-appservice": {
+              "effort": 1,
+              "severity": "potential"
+            },
+            "azure-container-apps": {
+              "effort": 1,
+              "severity": "potential"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=azure/springboot"
+          ]
+        },
+        {
+          "ruleId": "localhost-http-00001",
+          "incidentId": "8ed07440-773d-4e9f-84c0-d9d1d33a96b0",
+          "location": "helidon/src/main/java/io/helidon/examples/quickstart/se/Main.java",
+          "locationKind": "File",
+          "line": 21,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=cloud-readiness"
+          ]
+        },
+        {
+          "ruleId": "hardcoded-urls-00001",
+          "incidentId": "b79880b4-1dd9-4e7d-82ca-fa6b046814c7",
+          "location": "helidon/src/main/java/io/helidon/examples/quickstart/se/Main.java",
+          "locationKind": "File",
+          "line": 21,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "optional"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "optional"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=cloud-readiness"
+          ]
+        },
+        {
+          "ruleId": "unsecure-network-protocol-00000",
+          "incidentId": "44e4ce68-79ef-4a9d-b741-e3546401b886",
+          "location": "helidon/src/main/java/io/helidon/examples/quickstart/se/Main.java",
+          "locationKind": "File",
+          "line": 21,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=cloud-readiness"
+          ]
+        },
+        {
+          "ruleId": "dockerfile-00000",
+          "incidentId": "00c8e761-369d-4686-ac4c-8ea1343062fd",
+          "location": "",
+          "locationKind": "",
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=cloud-readiness"
+          ]
+        },
+        {
+          "ruleId": "hardcoded-ip-address",
+          "incidentId": "ebc8a73c-d94b-4135-94bf-92c436ab1fda",
+          "location": "helidon-mp/src/main/resources/META-INF/microprofile-config.properties",
+          "locationKind": "File",
+          "line": 3,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=discovery-rules"
+          ]
+        },
+        {
+          "ruleId": "hardcoded-ip-address",
+          "incidentId": "c56a1927-ecd9-4a5a-a5a9-eadf50b31733",
+          "location": "quarkus/src/main/resources/application.properties",
+          "locationKind": "File",
+          "line": 3,
+          "column": 0,
+          "targets": {
+            "azure-aks": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-appservice": {
+              "effort": 3,
+              "severity": "mandatory"
+            },
+            "azure-container-apps": {
+              "effort": 3,
+              "severity": "mandatory"
+            }
+          },
+          "labels": [
+            "type=violation",
+            "ruleset=discovery-rules"
+          ]
+        }
+      ]
+    }
+  ],
+  "rules": {
+    "azure-java-version-02000": {
+      "id": "azure-java-version-02000",
+      "description": "The application is not using the latest LTS Java version. It is recommended to consider upgrading to the latest LTS version to take advantage of the newest language features, performance improvements, and extended support timelines.\nUpgrading to the latest LTS version ensures your application benefits from the most recent security enhancements and a longer support lifecycle.",
+      "title": "Java Version is not the latest LTS",
+      "severity": "optional",
+      "effort": 8,
+      "labels": [
+        "target=azure-appservice",
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "source",
+        "domain=java-upgrade",
+        "category=java-version-upgrade",
+        "version",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "dockerfile-00000": {
+      "id": "dockerfile-00000",
+      "description": "No Dockerfile was found in the project. This suggests the application may not yet be containerized. \nConsider creating a Dockerfile to enable container-based replatforming to Azure services such as Azure Container Apps or AKS.",
+      "title": "No Dockerfile found",
+      "severity": "mandatory",
+      "effort": 3,
+      "links": [
+        {
+          "url": "https://www.baeldung.com/java-dockerize-app",
+          "title": "Dockerizing a Java Application"
+        }
+      ],
+      "labels": [
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "capability=containerization",
+        "source",
+        "domain=cloud-readiness",
+        "category=containerization",
+        "containerization",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "hardcoded-ip-address": {
+      "id": "hardcoded-ip-address",
+      "description": "When migrating environments, hard-coded IP addresses may need to be modified or eliminated.",
+      "title": "Hardcoded IP Address",
+      "severity": "mandatory",
+      "effort": 3,
+      "labels": [
+        "source",
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "target=azure-appservice",
+        "capability=containerization",
+        "domain=cloud-readiness",
+        "category=remote-communication",
+        "containerization",
+        "os=windows",
+        "os=linux",
+        "discovery"
+      ]
+    },
+    "hardcoded-urls-00001": {
+      "id": "hardcoded-urls-00001",
+      "description": "This patterns verifies in source code and configuration files the presence of hardcoded URLs using the HTTP protocol (HTTP/HTTPS). This URL would need to be replaced by the new resource's URL during the Cloud migration, if any change occured.",
+      "title": "Avoid using hardcoded URLs (HTTP protocol) in source code",
+      "severity": "optional",
+      "effort": 3,
+      "labels": [
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "target=azure-appservice",
+        "source",
+        "domain=cloud-readiness",
+        "category=remote-communication",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "localhost-http-00001": {
+      "id": "localhost-http-00001",
+      "description": "The app is trying to access local resource by HTTP, please try to migrate the resource to cloud",
+      "title": "Local HTTP Calls",
+      "severity": "mandatory",
+      "effort": 3,
+      "labels": [
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "target=azure-appservice",
+        "capability=containerization",
+        "source",
+        "domain=cloud-readiness",
+        "category=local-resource-access",
+        "localhost",
+        "containerization",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "spring-boot-to-azure-port-01000": {
+      "id": "spring-boot-to-azure-port-01000",
+      "description": "The application is setting the server port. To migrate a Java application that sets the server port to Azure Container Apps:\n\n * **Azure Container Apps allows you to expose port according to your Azure Container Apps resource configuration. For instance, a Spring Boot application listens to port of 8080 by default, but it can be set with server.port or environment variable SERVER_PORT as you need.",
+      "title": "Server port configuration found",
+      "severity": "potential",
+      "effort": 1,
+      "links": [
+        {
+          "url": "https://learn.microsoft.com/azure/developer/java/migration/migrate-spring-boot-to-azure-container-apps#identify-any-clients-relying-on-a-non-standard-port",
+          "title": "Identify any clients relying on a non-standard port"
+        }
+      ],
+      "labels": [
+        "source=springboot",
+        "target=azure-aks",
+        "target=azure-appservice",
+        "target=azure-container-apps",
+        "domain=cloud-readiness",
+        "category=spring-migration",
+        "port",
+        "server port",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "spring-boot-to-azure-restricted-config-01000": {
+      "id": "spring-boot-to-azure-restricted-config-01000",
+      "description": "The application uses restricted configurations for Azure Container Apps.\n These properties can be automatically injected into your application environment by Azure Container Apps to access managed Config Server and managed Eureka Server.\n Please remove them from your application, including configuration files, config server files, command line parameters, Java system attributes, and environment variables.\n\n If configured in **configuration files**: they will be ignored and overrided by Azure Container Apps.\n \n If configured in **Config Server files**, **command line parameters**, **Java system attribute**, **environment variable**: they need to be removed or you might experience conflicts and unexpected behavior.",
+      "title": "Restricted configurations found",
+      "severity": "potential",
+      "effort": 2,
+      "links": [
+        {
+          "url": "https://learn.microsoft.com/azure/developer/java/migration/migrate-spring-cloud-to-azure-container-apps#remove-restricted-configurations",
+          "title": "Migrate Spring Boot applications to Azure Container Apps - Remove restricted configurations"
+        },
+        {
+          "url": "https://learn.microsoft.com/azure/container-apps/java-config-server?tabs=azure-cli",
+          "title": "Connect to a managed Config Server for Spring in Azure Container Apps"
+        },
+        {
+          "url": "https://learn.microsoft.com/azure/container-apps/java-eureka-server?tabs=azure-cli",
+          "title": "Connect to a managed Eureka Server for Spring in Azure Container Apps"
+        }
+      ],
+      "labels": [
+        "target=azure-container-apps",
+        "source=springboot",
+        "domain=cloud-readiness",
+        "category=spring-migration",
+        "os=windows",
+        "os=linux"
+      ]
+    },
+    "unsecure-network-protocol-00000": {
+      "id": "unsecure-network-protocol-00000",
+      "description": "Using secured protocols such as HTTPS and SFTP (over HTTP and FTP) should now be the norm as applications are more and more exposed and interconnected. \nThis CloudReady patterns looks for unescured URI in the source code or deprecated URI libraries. \nIdeally, URLs should be replaced in your source code by secured protocols HTTPS and SFTP (and ensure the infrastructure implements these protocols for the resources your application calls, uses or references).",
+      "title": "Use of unsecured network protocols or URI libraries",
+      "severity": "mandatory",
+      "effort": 3,
+      "links": [
+        {
+          "url": "https://developers.google.com/web/fundamentals/security/encrypt-in-transit/why-https",
+          "title": "Why HTTPS matters"
+        },
+        {
+          "url": "https://www.ssh.com/ssh/sftp/",
+          "title": "SSH File Transfer Protocol (SFTP): Get SFTP client & server"
+        }
+      ],
+      "labels": [
+        "target=azure-aks",
+        "target=azure-container-apps",
+        "target=azure-appservice",
+        "capability=containerization",
+        "source",
+        "domain=cloud-readiness",
+        "category=remote-communication",
+        "containerization",
+        "os=windows",
+        "os=linux"
+      ]
+    }
+  },
+  "security": [
+    {
+      "id": "CVE-2020-25649",
+      "title": "XML External Entity (XXE) Injection in Jackson Databind",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2020-25649](https://github.com/advisories/GHSA-288c-cq4h-88gq): XML External Entity (XXE) Injection in Jackson Databind\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-databind:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-databind:2.15.2 (declared at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (declared at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.9.10.7 or later",
+      "evidence": {
+        "files": [
+          "javalin/pom.xml:39",
+          "micronaut/pom.xml:73",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36",
+          "sparkjava/pom.xml:43"
+        ],
+        "explanation": "[CVE-2020-25649](https://github.com/advisories/GHSA-288c-cq4h-88gq): XML External Entity (XXE) Injection in Jackson Databind\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-databind:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-databind:2.15.2 (declared at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (declared at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.9.10.7 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2020-36518",
+      "title": "Deeply nested json in jackson-databind",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2020-36518](https://github.com/advisories/GHSA-57j2-w4cx-62h2): Deeply nested json in jackson-databind\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-databind:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-databind:2.15.2 (declared at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (declared at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.13.2.1 or later",
+      "evidence": {
+        "files": [
+          "javalin/pom.xml:39",
+          "micronaut/pom.xml:73",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36",
+          "sparkjava/pom.xml:43"
+        ],
+        "explanation": "[CVE-2020-36518](https://github.com/advisories/GHSA-57j2-w4cx-62h2): Deeply nested json in jackson-databind\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-databind:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-databind:2.15.2 (declared at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (declared at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.13.2.1 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2021-46877",
+      "title": "jackson-databind possible Denial of Service if using JDK serialization to serialize JsonNode",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2021-46877](https://github.com/advisories/GHSA-3x8x-79m2-3w2w): jackson-databind possible Denial of Service if using JDK serialization to serialize JsonNode\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-databind:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-databind:2.15.2 (declared at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (declared at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.12.6 or later",
+      "evidence": {
+        "files": [
+          "javalin/pom.xml:39",
+          "micronaut/pom.xml:73",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36",
+          "sparkjava/pom.xml:43"
+        ],
+        "explanation": "[CVE-2021-46877](https://github.com/advisories/GHSA-3x8x-79m2-3w2w): jackson-databind possible Denial of Service if using JDK serialization to serialize JsonNode\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-databind:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-databind:2.15.2 (declared at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (declared at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.12.6 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2022-1471",
+      "title": "SnakeYaml Constructor Deserialization Remote Code Execution",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2022-1471](https://github.com/advisories/GHSA-mjmj-j48q-9wg2): SnakeYaml Constructor Deserialization Remote Code Execution\nAffected dependencies:\n  - org.yaml:snakeyaml:1.27 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - org.yaml:snakeyaml:2.3 (declared at micronaut/pom.xml:78)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by org.springframework.boot:spring-boot-starter-actuator at spring-boot/pom.xml:41)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by io.helidon.config:helidon-config-yaml at helidon/pom.xml:34)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by io.helidon.microprofile.openapi:helidon-microprofile-openapi at helidon-mp/pom.xml:46)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.0 or later",
+      "evidence": {
+        "files": [
+          "helidon-mp/pom.xml:46",
+          "helidon/pom.xml:34",
+          "micronaut/pom.xml:78",
+          "ratpack/pom.xml:36",
+          "spring-boot/pom.xml:41"
+        ],
+        "explanation": "[CVE-2022-1471](https://github.com/advisories/GHSA-mjmj-j48q-9wg2): SnakeYaml Constructor Deserialization Remote Code Execution\nAffected dependencies:\n  - org.yaml:snakeyaml:1.27 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - org.yaml:snakeyaml:2.3 (declared at micronaut/pom.xml:78)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by org.springframework.boot:spring-boot-starter-actuator at spring-boot/pom.xml:41)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by io.helidon.config:helidon-config-yaml at helidon/pom.xml:34)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by io.helidon.microprofile.openapi:helidon-microprofile-openapi at helidon-mp/pom.xml:46)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.0 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2022-25857",
+      "title": "Uncontrolled Resource Consumption in snakeyaml",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2022-25857](https://github.com/advisories/GHSA-3mc7-4q67-w48m): Uncontrolled Resource Consumption in snakeyaml\nAffected dependencies:\n  - org.yaml:snakeyaml:1.27 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - org.yaml:snakeyaml:2.3 (declared at micronaut/pom.xml:78)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by org.springframework.boot:spring-boot-starter-actuator at spring-boot/pom.xml:41)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by io.helidon.config:helidon-config-yaml at helidon/pom.xml:34)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by io.helidon.microprofile.openapi:helidon-microprofile-openapi at helidon-mp/pom.xml:46)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 1.31 or later",
+      "evidence": {
+        "files": [
+          "helidon-mp/pom.xml:46",
+          "helidon/pom.xml:34",
+          "micronaut/pom.xml:78",
+          "ratpack/pom.xml:36",
+          "spring-boot/pom.xml:41"
+        ],
+        "explanation": "[CVE-2022-25857](https://github.com/advisories/GHSA-3mc7-4q67-w48m): Uncontrolled Resource Consumption in snakeyaml\nAffected dependencies:\n  - org.yaml:snakeyaml:1.27 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - org.yaml:snakeyaml:2.3 (declared at micronaut/pom.xml:78)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by org.springframework.boot:spring-boot-starter-actuator at spring-boot/pom.xml:41)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by io.helidon.config:helidon-config-yaml at helidon/pom.xml:34)\n  - org.yaml:snakeyaml:2.5 (transitive, pulled by io.helidon.microprofile.openapi:helidon-microprofile-openapi at helidon-mp/pom.xml:46)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 1.31 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2022-42003",
+      "title": "Uncontrolled Resource Consumption in Jackson-databind",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2022-42003](https://github.com/advisories/GHSA-jjjh-jjxp-wpff): Uncontrolled Resource Consumption in Jackson-databind\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-databind:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-databind:2.15.2 (declared at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (declared at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.12.7.1 or later",
+      "evidence": {
+        "files": [
+          "javalin/pom.xml:39",
+          "micronaut/pom.xml:73",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36",
+          "sparkjava/pom.xml:43"
+        ],
+        "explanation": "[CVE-2022-42003](https://github.com/advisories/GHSA-jjjh-jjxp-wpff): Uncontrolled Resource Consumption in Jackson-databind\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-databind:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-databind:2.15.2 (declared at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (declared at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.12.7.1 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2022-42004",
+      "title": "Uncontrolled Resource Consumption in FasterXML jackson-databind",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2022-42004](https://github.com/advisories/GHSA-rgv9-q543-rqg4): Uncontrolled Resource Consumption in FasterXML jackson-databind\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-databind:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-databind:2.15.2 (declared at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (declared at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.13.4 or later",
+      "evidence": {
+        "files": [
+          "javalin/pom.xml:39",
+          "micronaut/pom.xml:73",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36",
+          "sparkjava/pom.xml:43"
+        ],
+        "explanation": "[CVE-2022-42004](https://github.com/advisories/GHSA-rgv9-q543-rqg4): Uncontrolled Resource Consumption in FasterXML jackson-databind\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-databind:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-databind:2.15.2 (declared at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-databind:2.20.1 (declared at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.13.4 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2024-13009",
+      "title": "**UNSUPPORTED WHEN ASSIGNED** GzipHandler causes part of request body to be seen as request body of a separate request",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2024-13009](https://github.com/advisories/GHSA-q4rv-gq96-w7c5): **UNSUPPORTED WHEN ASSIGNED** GzipHandler causes part of request body to be seen as request body of a separate request\nAffected dependencies:\n  - org.eclipse.jetty:jetty-server:11.0.25 (transitive, pulled by io.javalin:javalin at javalin/pom.xml:34)\n  - org.eclipse.jetty:jetty-server:9.4.48.v20220622 (transitive, pulled by com.sparkjava:spark-core at sparkjava/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.4.57.v20241219 or later",
+      "evidence": {
+        "files": [
+          "javalin/pom.xml:34",
+          "sparkjava/pom.xml:36"
+        ],
+        "explanation": "[CVE-2024-13009](https://github.com/advisories/GHSA-q4rv-gq96-w7c5): **UNSUPPORTED WHEN ASSIGNED** GzipHandler causes part of request body to be seen as request body of a separate request\nAffected dependencies:\n  - org.eclipse.jetty:jetty-server:11.0.25 (transitive, pulled by io.javalin:javalin at javalin/pom.xml:34)\n  - org.eclipse.jetty:jetty-server:9.4.48.v20220622 (transitive, pulled by com.sparkjava:spark-core at sparkjava/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.4.57.v20241219 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2025-52999",
+      "title": "jackson-core can throw a StackoverflowError when processing deeply nested data",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2025-52999](https://github.com/advisories/GHSA-h46c-h94j-95f3): jackson-core can throw a StackoverflowError when processing deeply nested data\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-core:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-core:2.15.2 (transitive, pulled by com.fasterxml.jackson.core:jackson-databind at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-core:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-core:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-core:2.20.1 (transitive, pulled by com.fasterxml.jackson.core:jackson-databind at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.15.0 or later",
+      "evidence": {
+        "files": [
+          "javalin/pom.xml:39",
+          "micronaut/pom.xml:73",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36",
+          "sparkjava/pom.xml:43"
+        ],
+        "explanation": "[CVE-2025-52999](https://github.com/advisories/GHSA-h46c-h94j-95f3): jackson-core can throw a StackoverflowError when processing deeply nested data\nAffected dependencies:\n  - com.fasterxml.jackson.core:jackson-core:2.10.3 (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - com.fasterxml.jackson.core:jackson-core:2.15.2 (transitive, pulled by com.fasterxml.jackson.core:jackson-databind at sparkjava/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-core:2.18.2 (transitive, pulled by io.micronaut:micronaut-jackson-databind at micronaut/pom.xml:73)\n  - com.fasterxml.jackson.core:jackson-core:2.20.1 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - com.fasterxml.jackson.core:jackson-core:2.20.1 (transitive, pulled by com.fasterxml.jackson.core:jackson-databind at javalin/pom.xml:39)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 2.15.0 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2025-55163",
+      "title": "Netty affected by MadeYouReset HTTP/2 DDoS vulnerability",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2025-55163](https://github.com/advisories/GHSA-prj3-ccx8-p6x4): Netty affected by MadeYouReset HTTP/2 DDoS vulnerability\nAffected dependencies:\n  - io.netty:netty-codec-http2:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-codec-http2:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.4.Final or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:63",
+          "quarkus/pom.xml:43"
+        ],
+        "explanation": "[CVE-2025-55163](https://github.com/advisories/GHSA-prj3-ccx8-p6x4): Netty affected by MadeYouReset HTTP/2 DDoS vulnerability\nAffected dependencies:\n  - io.netty:netty-codec-http2:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-codec-http2:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.4.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-22731",
+      "title": "Spring Boot has an Authentication Bypass under Actuator Health groups paths",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-22731](https://github.com/advisories/GHSA-8hfc-fq58-r658): Spring Boot has an Authentication Bypass under Actuator Health groups paths\nAffected dependencies:\n  - org.springframework.boot:spring-boot-starter-actuator:4.0.0 (declared at spring-boot/pom.xml:41)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 3.5.12 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:41"
+        ],
+        "explanation": "[CVE-2026-22731](https://github.com/advisories/GHSA-8hfc-fq58-r658): Spring Boot has an Authentication Bypass under Actuator Health groups paths\nAffected dependencies:\n  - org.springframework.boot:spring-boot-starter-actuator:4.0.0 (declared at spring-boot/pom.xml:41)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 3.5.12 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-22733",
+      "title": "Spring Boot has an Authentication Bypass under Actuator CloudFoundry endpoints",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-22733](https://github.com/advisories/GHSA-mgvc-8q2h-5pgc): Spring Boot has an Authentication Bypass under Actuator CloudFoundry endpoints\nAffected dependencies:\n  - org.springframework.boot:spring-boot-starter-actuator:4.0.0 (declared at spring-boot/pom.xml:41)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.0.4 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:41"
+        ],
+        "explanation": "[CVE-2026-22733](https://github.com/advisories/GHSA-mgvc-8q2h-5pgc): Spring Boot has an Authentication Bypass under Actuator CloudFoundry endpoints\nAffected dependencies:\n  - org.springframework.boot:spring-boot-starter-actuator:4.0.0 (declared at spring-boot/pom.xml:41)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.0.4 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-2332",
+      "title": "Jetty has HTTP Request Smuggling via Chunked Extension Quoted-String Parsing",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-2332](https://github.com/advisories/GHSA-355h-qmc2-wpwf): Jetty has HTTP Request Smuggling via Chunked Extension Quoted-String Parsing\nAffected dependencies:\n  - org.eclipse.jetty:jetty-http:11.0.25 (transitive, pulled by io.javalin:javalin at javalin/pom.xml:34)\n  - org.eclipse.jetty:jetty-http:9.4.48.v20220622 (transitive, pulled by com.sparkjava:spark-core at sparkjava/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 12.1.7 or later",
+      "evidence": {
+        "files": [
+          "javalin/pom.xml:34",
+          "sparkjava/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-2332](https://github.com/advisories/GHSA-355h-qmc2-wpwf): Jetty has HTTP Request Smuggling via Chunked Extension Quoted-String Parsing\nAffected dependencies:\n  - org.eclipse.jetty:jetty-http:11.0.25 (transitive, pulled by io.javalin:javalin at javalin/pom.xml:34)\n  - org.eclipse.jetty:jetty-http:9.4.48.v20220622 (transitive, pulled by com.sparkjava:spark-core at sparkjava/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 12.1.7 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-24734",
+      "title": "Apache Tomcat has an Improper Input Validation vulnerability",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-24734](https://github.com/advisories/GHSA-mgp5-rv84-w37q): Apache Tomcat has an Improper Input Validation vulnerability\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 11.0.18 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-24734](https://github.com/advisories/GHSA-mgp5-rv84-w37q): Apache Tomcat has an Improper Input Validation vulnerability\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 11.0.18 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-24880",
+      "title": "Apache Tomcat has an HTTP Request/Response Smuggling vulnerability",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-24880](https://github.com/advisories/GHSA-563x-q5rq-57qp): Apache Tomcat has an HTTP Request/Response Smuggling vulnerability\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.116 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-24880](https://github.com/advisories/GHSA-563x-q5rq-57qp): Apache Tomcat has an HTTP Request/Response Smuggling vulnerability\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.116 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-29062",
+      "title": "jackson-core has Nesting Depth Constraint Bypass in `UTF8DataInputJsonParser` potentially allowing Resource Exhaustion",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-29062](https://github.com/advisories/GHSA-6v53-7c9g-w56r): jackson-core has Nesting Depth Constraint Bypass in `UTF8DataInputJsonParser` potentially allowing Resource Exhaustion\nAffected dependencies:\n  - tools.jackson.core:jackson-core:3.0.2 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 3.1.0 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-29062](https://github.com/advisories/GHSA-6v53-7c9g-w56r): jackson-core has Nesting Depth Constraint Bypass in `UTF8DataInputJsonParser` potentially allowing Resource Exhaustion\nAffected dependencies:\n  - tools.jackson.core:jackson-core:3.0.2 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 3.1.0 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-33012",
+      "title": "Micronaut Framework vulnerable to a Denial of Service in HTML error response caching",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-33012](https://github.com/advisories/GHSA-2hcp-gjrf-7fhc): Micronaut Framework vulnerable to a Denial of Service in HTML error response caching\nAffected dependencies:\n  - io.micronaut:micronaut-http-server:4.8.18 (transitive, pulled by io.micronaut:micronaut-http-server-netty at micronaut/pom.xml:68)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.10.17 or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:68"
+        ],
+        "explanation": "[CVE-2026-33012](https://github.com/advisories/GHSA-2hcp-gjrf-7fhc): Micronaut Framework vulnerable to a Denial of Service in HTML error response caching\nAffected dependencies:\n  - io.micronaut:micronaut-http-server:4.8.18 (transitive, pulled by io.micronaut:micronaut-http-server-netty at micronaut/pom.xml:68)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.10.17 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-33013",
+      "title": "Micronaut vulnerable to DoS via crafted form-urlencoded body binding with descending array indices",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-33013](https://github.com/advisories/GHSA-43w5-mmxv-cpvh): Micronaut vulnerable to DoS via crafted form-urlencoded body binding with descending array indices\nAffected dependencies:\n  - io.micronaut:micronaut-json-core:4.8.18 (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.10.16 or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:63"
+        ],
+        "explanation": "[CVE-2026-33013](https://github.com/advisories/GHSA-43w5-mmxv-cpvh): Micronaut vulnerable to DoS via crafted form-urlencoded body binding with descending array indices\nAffected dependencies:\n  - io.micronaut:micronaut-json-core:4.8.18 (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.10.16 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-33870",
+      "title": "Netty: HTTP Request Smuggling via Chunked Extension Quoted-String Parsing",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-33870](https://github.com/advisories/GHSA-pwqr-wmgm-9rr8): Netty: HTTP Request Smuggling via Chunked Extension Quoted-String Parsing\nAffected dependencies:\n  - io.netty:netty-codec-http:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-server-netty at micronaut/pom.xml:68)\n  - io.netty:netty-codec-http:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-codec-http:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.1.132.Final or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:68",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-33870](https://github.com/advisories/GHSA-pwqr-wmgm-9rr8): Netty: HTTP Request Smuggling via Chunked Extension Quoted-String Parsing\nAffected dependencies:\n  - io.netty:netty-codec-http:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-server-netty at micronaut/pom.xml:68)\n  - io.netty:netty-codec-http:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-codec-http:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.1.132.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-33871",
+      "title": "Netty HTTP/2 CONTINUATION Frame Flood DoS via Zero-Byte Frame Bypass",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-33871](https://github.com/advisories/GHSA-w9fj-cfpg-grvv): Netty HTTP/2 CONTINUATION Frame Flood DoS via Zero-Byte Frame Bypass\nAffected dependencies:\n  - io.netty:netty-codec-http2:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-codec-http2:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.1.132.Final or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:63",
+          "quarkus/pom.xml:43"
+        ],
+        "explanation": "[CVE-2026-33871](https://github.com/advisories/GHSA-w9fj-cfpg-grvv): Netty HTTP/2 CONTINUATION Frame Flood DoS via Zero-Byte Frame Bypass\nAffected dependencies:\n  - io.netty:netty-codec-http2:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-codec-http2:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.1.132.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-34483",
+      "title": "Apache Tomcat has an Improper Encoding or Escaping of Output vulnerability in the JsonAccessLogValve",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-34483](https://github.com/advisories/GHSA-rv64-5gf8-9qq8): Apache Tomcat has an Improper Encoding or Escaping of Output vulnerability in the JsonAccessLogValve\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.116 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-34483](https://github.com/advisories/GHSA-rv64-5gf8-9qq8): Apache Tomcat has an Improper Encoding or Escaping of Output vulnerability in the JsonAccessLogValve\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.116 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-34487",
+      "title": "Apache Tomcat vulnerable to Insertion of Sensitive Information into Log File",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-34487](https://github.com/advisories/GHSA-x4m4-345f-5h5g): Apache Tomcat vulnerable to Insertion of Sensitive Information into Log File\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.117 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-34487](https://github.com/advisories/GHSA-x4m4-345f-5h5g): Apache Tomcat vulnerable to Insertion of Sensitive Information into Log File\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.117 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-39852",
+      "title": "Quarkus has Authentication/Authorization bypasses",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-39852](https://github.com/advisories/GHSA-rc95-pcm8-65v9): Quarkus has Authentication/Authorization bypasses\nAffected dependencies:\n  - io.quarkus:quarkus-vertx-http:3.30.3 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 3.20.6.1 or later",
+      "evidence": {
+        "files": [
+          "quarkus/pom.xml:43"
+        ],
+        "explanation": "[CVE-2026-39852](https://github.com/advisories/GHSA-rc95-pcm8-65v9): Quarkus has Authentication/Authorization bypasses\nAffected dependencies:\n  - io.quarkus:quarkus-vertx-http:3.30.3 (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 3.20.6.1 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-40973",
+      "title": "Spring Boot accepts predictable temp directory without ownership verification",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-40973](https://github.com/advisories/GHSA-wwpq-f5c3-7hvx): Spring Boot accepts predictable temp directory without ownership verification\nAffected dependencies:\n  - org.springframework.boot:spring-boot:4.0.0 (transitive, pulled by org.springframework.boot:spring-boot-starter-actuator at spring-boot/pom.xml:41)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.0.6 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:41"
+        ],
+        "explanation": "[CVE-2026-40973](https://github.com/advisories/GHSA-wwpq-f5c3-7hvx): Spring Boot accepts predictable temp directory without ownership verification\nAffected dependencies:\n  - org.springframework.boot:spring-boot:4.0.0 (transitive, pulled by org.springframework.boot:spring-boot-starter-actuator at spring-boot/pom.xml:41)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.0.6 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-40976",
+      "title": "Spring Boot's default security filter chain has no authorization rule with Actuator but without Health",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-40976](https://github.com/advisories/GHSA-8v8j-3hxp-93wr): Spring Boot's default security filter chain has no authorization rule with Actuator but without Health\nAffected dependencies:\n  - org.springframework.boot:spring-boot:4.0.0 (transitive, pulled by org.springframework.boot:spring-boot-starter-actuator at spring-boot/pom.xml:41)\n\nSeverity: CRITICAL\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.0.6 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:41"
+        ],
+        "explanation": "[CVE-2026-40976](https://github.com/advisories/GHSA-8v8j-3hxp-93wr): Spring Boot's default security filter chain has no authorization rule with Actuator but without Health\nAffected dependencies:\n  - org.springframework.boot:spring-boot:4.0.0 (transitive, pulled by org.springframework.boot:spring-boot-starter-actuator at spring-boot/pom.xml:41)\n\nSeverity: CRITICAL\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.0.6 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-41284",
+      "title": "Apache Tomcat: Unbounded read in WebDAV LOCK and  PROPFIND handling",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-41284](https://github.com/advisories/GHSA-gx5v-xp9w-j4cg): Apache Tomcat: Unbounded read in WebDAV LOCK and  PROPFIND handling\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-41284](https://github.com/advisories/GHSA-gx5v-xp9w-j4cg): Apache Tomcat: Unbounded read in WebDAV LOCK and  PROPFIND handling\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-41293",
+      "title": "Apache Tomcat - HTTP/2 request headers not validated",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-41293](https://github.com/advisories/GHSA-r29c-68gh-xp6x): Apache Tomcat - HTTP/2 request headers not validated\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: CRITICAL\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-41293](https://github.com/advisories/GHSA-r29c-68gh-xp6x): Apache Tomcat - HTTP/2 request headers not validated\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: CRITICAL\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-42498",
+      "title": "Apache Tomcat - WebSocket authentication header exposure",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-42498](https://github.com/advisories/GHSA-fv25-8xcx-gqjc): Apache Tomcat - WebSocket authentication header exposure\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-42498](https://github.com/advisories/GHSA-fv25-8xcx-gqjc): Apache Tomcat - WebSocket authentication header exposure\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-42579",
+      "title": "Netty has a DNS Codec Input Validation Bypass (Encoder + Decoder)",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-42579](https://github.com/advisories/GHSA-cm33-6792-r9fm): Netty has a DNS Codec Input Validation Bypass (Encoder + Decoder)\nAffected dependencies:\n  - io.netty:netty-codec-dns:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-codec-dns:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.13.Final or later",
+      "evidence": {
+        "files": [
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-42579](https://github.com/advisories/GHSA-cm33-6792-r9fm): Netty has a DNS Codec Input Validation Bypass (Encoder + Decoder)\nAffected dependencies:\n  - io.netty:netty-codec-dns:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-codec-dns:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.13.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-42583",
+      "title": "Netty Lz4FrameDecoder is vulnerable to resource exhaustion ",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-42583](https://github.com/advisories/GHSA-mj4r-2hfc-f8p6): Netty Lz4FrameDecoder is vulnerable to resource exhaustion \nAffected dependencies:\n  - io.netty:netty-codec:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-codec:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-codec:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.1.133.Final or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:63",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-42583](https://github.com/advisories/GHSA-mj4r-2hfc-f8p6): Netty Lz4FrameDecoder is vulnerable to resource exhaustion \nAffected dependencies:\n  - io.netty:netty-codec:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-codec:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-codec:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.1.133.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-42584",
+      "title": "Netty has HttpClientCodec response desynchronization",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-42584](https://github.com/advisories/GHSA-57rv-r2g8-2cj3): Netty has HttpClientCodec response desynchronization\nAffected dependencies:\n  - io.netty:netty-codec-http:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-server-netty at micronaut/pom.xml:68)\n  - io.netty:netty-codec-http:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-codec-http:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.13.Final or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:68",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-42584](https://github.com/advisories/GHSA-57rv-r2g8-2cj3): Netty has HttpClientCodec response desynchronization\nAffected dependencies:\n  - io.netty:netty-codec-http:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-server-netty at micronaut/pom.xml:68)\n  - io.netty:netty-codec-http:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-codec-http:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.13.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-42587",
+      "title": "Netty: HttpContentDecompressor maxAllocation bypass when Content-Encoding set to br/zstd/snappy leads to decompression bomb DoS",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-42587](https://github.com/advisories/GHSA-f6hv-jmp6-3vwv): Netty: HttpContentDecompressor maxAllocation bypass when Content-Encoding set to br/zstd/snappy leads to decompression bomb DoS\nAffected dependencies:\n  - io.netty:netty-codec-http:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-server-netty at micronaut/pom.xml:68)\n  - io.netty:netty-codec-http:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-codec-http:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - io.netty:netty-codec-http2:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-codec-http2:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.13.Final or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:63",
+          "micronaut/pom.xml:68",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-42587](https://github.com/advisories/GHSA-f6hv-jmp6-3vwv): Netty: HttpContentDecompressor maxAllocation bypass when Content-Encoding set to br/zstd/snappy leads to decompression bomb DoS\nAffected dependencies:\n  - io.netty:netty-codec-http:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-server-netty at micronaut/pom.xml:68)\n  - io.netty:netty-codec-http:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-codec-http:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n  - io.netty:netty-codec-http2:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-codec-http2:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.13.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-43512",
+      "title": "Apache Tomcat - Digest authenticator will authenticate any unknown user",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-43512](https://github.com/advisories/GHSA-h6fc-48rj-7qqh): Apache Tomcat - Digest authenticator will authenticate any unknown user\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: CRITICAL\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-43512](https://github.com/advisories/GHSA-h6fc-48rj-7qqh): Apache Tomcat - Digest authenticator will authenticate any unknown user\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: CRITICAL\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-43513",
+      "title": "Apache Tomcat: LockOutRealm treats user names as case-sensitive",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-43513](https://github.com/advisories/GHSA-5mp6-jrq3-r938): Apache Tomcat: LockOutRealm treats user names as case-sensitive\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-43513](https://github.com/advisories/GHSA-5mp6-jrq3-r938): Apache Tomcat: LockOutRealm treats user names as case-sensitive\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-43515",
+      "title": "Apache Tomcat - Security constraints not correctly applied",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-43515](https://github.com/advisories/GHSA-5m62-pw8w-7w9f): Apache Tomcat - Security constraints not correctly applied\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: CRITICAL\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[CVE-2026-43515](https://github.com/advisories/GHSA-5m62-pw8w-7w9f): Apache Tomcat - Security constraints not correctly applied\nAffected dependencies:\n  - org.apache.tomcat.embed:tomcat-embed-core:11.0.14 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: CRITICAL\n\n\nRecommended fix:\n  - Upgrade affected dependency to 9.0.118 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-44241",
+      "title": "Micronaut has unbounded `formattersCache` in `TimeConverterRegistrar` that Allows Memory Exhaustion via `Accept-Language` Header",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-44241](https://github.com/advisories/GHSA-8hjv-92q9-g4xj): Micronaut has unbounded `formattersCache` in `TimeConverterRegistrar` that Allows Memory Exhaustion via `Accept-Language` Header\nAffected dependencies:\n  - io.micronaut:micronaut-context:4.8.18 (transitive, pulled by io.micronaut:micronaut-runtime at micronaut/pom.xml:58)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.10.22 or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:58"
+        ],
+        "explanation": "[CVE-2026-44241](https://github.com/advisories/GHSA-8hjv-92q9-g4xj): Micronaut has unbounded `formattersCache` in `TimeConverterRegistrar` that Allows Memory Exhaustion via `Accept-Language` Header\nAffected dependencies:\n  - io.micronaut:micronaut-context:4.8.18 (transitive, pulled by io.micronaut:micronaut-runtime at micronaut/pom.xml:58)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.10.22 or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-44249",
+      "title": "Netty has an IPv6 Subnet Filter Bypass via Incorrect Comparator Masking",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-44249](https://github.com/advisories/GHSA-3qp7-7mw8-wx86): Netty has an IPv6 Subnet Filter Bypass via Incorrect Comparator Masking\nAffected dependencies:\n  - io.netty:netty-handler:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-handler:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-handler:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:63",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-44249](https://github.com/advisories/GHSA-3qp7-7mw8-wx86): Netty has an IPv6 Subnet Filter Bypass via Incorrect Comparator Masking\nAffected dependencies:\n  - io.netty:netty-handler:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-handler:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-handler:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-44893",
+      "title": "Netty: HAProxy SSL TLV parsing leaks retained slice on invalid TLV length",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-44893](https://github.com/advisories/GHSA-cc37-9q2j-3hfv): Netty: HAProxy SSL TLV parsing leaks retained slice on invalid TLV length\nAffected dependencies:\n  - io.netty:netty-codec-haproxy:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later",
+      "evidence": {
+        "files": [
+          "quarkus/pom.xml:43"
+        ],
+        "explanation": "[CVE-2026-44893](https://github.com/advisories/GHSA-cc37-9q2j-3hfv): Netty: HAProxy SSL TLV parsing leaks retained slice on invalid TLV length\nAffected dependencies:\n  - io.netty:netty-codec-haproxy:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-45416",
+      "title": "Netty: SNI handler pre-allocates up to 16 MiB from nine attacker bytes",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-45416](https://github.com/advisories/GHSA-x4gw-5cx5-pgmh): Netty: SNI handler pre-allocates up to 16 MiB from nine attacker bytes\nAffected dependencies:\n  - io.netty:netty-handler:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-handler:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-handler:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:63",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-45416](https://github.com/advisories/GHSA-x4gw-5cx5-pgmh): Netty: SNI handler pre-allocates up to 16 MiB from nine attacker bytes\nAffected dependencies:\n  - io.netty:netty-handler:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-handler:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-handler:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-45674",
+      "title": "Netty Vulnerable to DNS Cache Poisoning via Missing Bailiwick Checks in CNAME Records",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-45674](https://github.com/advisories/GHSA-676x-f7gg-47vc): Netty Vulnerable to DNS Cache Poisoning via Missing Bailiwick Checks in CNAME Records\nAffected dependencies:\n  - io.netty:netty-resolver-dns:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-resolver-dns:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later",
+      "evidence": {
+        "files": [
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-45674](https://github.com/advisories/GHSA-676x-f7gg-47vc): Netty Vulnerable to DNS Cache Poisoning via Missing Bailiwick Checks in CNAME Records\nAffected dependencies:\n  - io.netty:netty-resolver-dns:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-resolver-dns:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-47691",
+      "title": "Netty has Insufficient Bailiwick Validation for NS Records",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-47691](https://github.com/advisories/GHSA-5pvg-856g-cp85): Netty has Insufficient Bailiwick Validation for NS Records\nAffected dependencies:\n  - io.netty:netty-resolver-dns:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-resolver-dns:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later",
+      "evidence": {
+        "files": [
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-47691](https://github.com/advisories/GHSA-5pvg-856g-cp85): Netty has Insufficient Bailiwick Validation for NS Records\nAffected dependencies:\n  - io.netty:netty-resolver-dns:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-resolver-dns:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-48059",
+      "title": "Netty HAProxy: Unbalanced Reference Count in Nested PP2_TYPE_SSL TLV Parsing Leads to Memory Exhaustion",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-48059](https://github.com/advisories/GHSA-h2qv-fj59-j46j): Netty HAProxy: Unbalanced Reference Count in Nested PP2_TYPE_SSL TLV Parsing Leads to Memory Exhaustion\nAffected dependencies:\n  - io.netty:netty-codec-haproxy:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later",
+      "evidence": {
+        "files": [
+          "quarkus/pom.xml:43"
+        ],
+        "explanation": "[CVE-2026-48059](https://github.com/advisories/GHSA-h2qv-fj59-j46j): Netty HAProxy: Unbalanced Reference Count in Nested PP2_TYPE_SSL TLV Parsing Leads to Memory Exhaustion\nAffected dependencies:\n  - io.netty:netty-codec-haproxy:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "CVE-2026-50010",
+      "title": "Netty: Wrapping plain trust manager silently disables hostname verification",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[CVE-2026-50010](https://github.com/advisories/GHSA-c653-97m9-rcg9): Netty: Wrapping plain trust manager silently disables hostname verification\nAffected dependencies:\n  - io.netty:netty-handler:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-handler:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-handler:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later",
+      "evidence": {
+        "files": [
+          "micronaut/pom.xml:63",
+          "quarkus/pom.xml:43",
+          "ratpack/pom.xml:36"
+        ],
+        "explanation": "[CVE-2026-50010](https://github.com/advisories/GHSA-c653-97m9-rcg9): Netty: Wrapping plain trust manager silently disables hostname verification\nAffected dependencies:\n  - io.netty:netty-handler:4.1.119.Final (transitive, pulled by io.micronaut:micronaut-http-client at micronaut/pom.xml:63)\n  - io.netty:netty-handler:4.1.128.Final (transitive, pulled by io.quarkus:quarkus-rest-jackson at quarkus/pom.xml:43)\n  - io.netty:netty-handler:4.1.82.Final (transitive, pulled by io.ratpack:ratpack-core at ratpack/pom.xml:36)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 4.2.15.Final or later"
+      },
+      "storyPoint": 1
+    },
+    {
+      "id": "GHSA-2m67-wjpj-xhg9",
+      "title": "Jackson Core: Document length constraint bypass in blocking, async, and DataInput parsers",
+      "category": "CVE",
+      "severity": "mandatory",
+      "description": "[GHSA-2m67-wjpj-xhg9](https://github.com/advisories/GHSA-2m67-wjpj-xhg9): Jackson Core: Document length constraint bypass in blocking, async, and DataInput parsers\nAffected dependencies:\n  - tools.jackson.core:jackson-core:3.0.2 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 3.1.1 or later",
+      "evidence": {
+        "files": [
+          "spring-boot/pom.xml:53"
+        ],
+        "explanation": "[GHSA-2m67-wjpj-xhg9](https://github.com/advisories/GHSA-2m67-wjpj-xhg9): Jackson Core: Document length constraint bypass in blocking, async, and DataInput parsers\nAffected dependencies:\n  - tools.jackson.core:jackson-core:3.0.2 (transitive, pulled by org.springframework.boot:spring-boot-starter-web at spring-boot/pom.xml:53)\n\nSeverity: HIGH\n\n\nRecommended fix:\n  - Upgrade affected dependency to 3.1.1 or later"
+      },
+      "storyPoint": 1
+    }
+  ]
+}
