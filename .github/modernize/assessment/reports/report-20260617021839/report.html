@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Assessment - showmyjvm-parent</title>
+<style>
+:root {
+  --bg-primary: #ffffff;
+  --bg-card: #f8f9fa;
+  --bg-page: #f0f1f3;
+  --text-primary: #24292f;
+  --text-secondary: #57606a;
+  --text-muted: #6b7280;
+  --border-color: #d0d7de;
+  --border-light: #e1e4e8;
+  --link-color: #2563eb;
+  --color-mandatory: #E3008C;
+  --color-potential: #637CEF;
+  --color-optional: #A19F9D;
+  --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  --font-mono: 'Cascadia Code', 'Consolas', 'Courier New', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-family); font-size: 13px; color: var(--text-primary); background: var(--bg-primary); line-height: 1.5; margin: 0; padding: 0; }
+a { color: var(--link-color); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ── Page layout ───────────────────────────────────────────── */
+.main { margin: 0; padding: 24px 32px; background: var(--bg-primary); }
+.back-link { color: var(--text-muted); font-size: 13px; margin-bottom: 16px; display: block; }
+h1 { font-weight: 600; font-size: 20px; color: var(--text-primary); margin-bottom: 20px; }
+
+/* ── Report cards (matches VS Code .vscode-report-card) ──── */
+.report-card { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 4px; padding: 12px; margin-bottom: 20px; }
+.report-card h2 { font-size: 14px; font-weight: 600; margin: 0; color: var(--text-primary); }
+.report-card-body { margin-top: 16px; }
+
+/* ── Component Information (two-column) ────────────────── */
+.app-info-container { display: flex; gap: 8px; flex-wrap: wrap; }
+.app-info-column { flex: 1; min-width: 200px; display: flex; flex-direction: column; gap: 8px; }
+.app-info-row { display: flex; align-items: baseline; }
+.app-info-label { width: 136px; flex-shrink: 0; font-weight: 600; color: var(--text-primary); }
+.app-info-value { flex: 1; color: var(--text-primary); }
+
+/* ── Issue Summary (pie charts + legend) ─────────────────── */
+.cards-container { display: flex; align-items: stretch; gap: 20px; flex-wrap: wrap; }
+.issue-summary-card { flex: 2; }
+.domain-summary-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-around; }
+.domain-summary-item { flex: 1; min-width: 120px; text-align: center; padding: 0 16px; border-right: 1px solid var(--border-light); }
+.domain-summary-item:last-child { border-right: none; }
+.domain-summary-item h3 { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-top: 8px; }
+.domain-summary-item .count { font-size: 12px; color: var(--text-secondary); }
+.criticality-legend { display: flex; flex-wrap: wrap; gap: 15px; padding-top: 12px; justify-content: center; }
+.criticality-legend .legend-item { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-secondary); }
+.legend-swatch { display: inline-block; width: 1em; height: 1em; border-radius: 2px; }
+
+/* ── Issue list tables ───────────────────────────────────── */
+.issue-section { margin-top: 20px; }
+.issue-section h2 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.issue-table { width: 100%; border-collapse: collapse; table-layout: fixed; min-width: 600px; }
+.issue-table th { text-align: left; text-transform: uppercase; font-weight: 600; font-size: calc(13px * 0.875); padding: 6px 8px; background: var(--bg-card); border-bottom: 1px solid var(--border-color); color: var(--text-secondary); position: sticky; top: 0; z-index: 1; }
+.issue-table td { padding: 12px 8px; border-bottom: 1px solid var(--border-light); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
+.col-issue { width: 55%; }
+.col-criticality { width: 25%; }
+.col-storypoint { width: 20%; }
+
+/* ── Target dropdown ─────────────────────────────────────── */
+.target-select-container { margin: 4px 0 16px 0; display: flex; align-items: center; gap: 8px; }
+.target-select-container label { font-weight: 600; color: var(--text-primary); font-size: 14px; }
+.target-select-container select { font-family: var(--font-family); font-size: 13px; padding: 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); cursor: pointer; }
+
+/* ── Filter bar ──────────────────────────────────────────── */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0 8px 0; align-items: center; }
+.multi-select { position: relative; display: inline-block; min-width: 140px; }
+.multi-select-btn { font-family: var(--font-family); font-size: 13px; padding: 4px 24px 4px 8px; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-primary); color: var(--text-primary); cursor: pointer; width: 100%; text-align: left; position: relative; white-space: nowrap; }
+.multi-select-btn::after { content: '\25BE'; position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-size: 11px; color: var(--text-secondary); }
+.multi-select-dropdown { display: none; position: absolute; top: 100%; left: 0; min-width: 100%; background: var(--bg-primary); border: 1px solid var(--border-color); border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; margin-top: 2px; }
+.multi-select.open .multi-select-dropdown { display: block; }
+.multi-select-option { display: flex; align-items: center; gap: 6px; padding: 5px 10px; cursor: pointer; font-size: 13px; white-space: nowrap; }
+.multi-select-option:hover { background: var(--bg-secondary); }
+.multi-select-option input[type=checkbox] { margin: 0; cursor: pointer; }
+.clear-filters { font-size: 12px; color: var(--link-color); cursor: pointer; margin-left: 4px; }
+
+/* ── Criticality labels (colored square + text) ──────────── */
+.crit-label { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; white-space: nowrap; }
+.crit-square { display: inline-block; width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.crit-square-mandatory { background: var(--color-mandatory); }
+.crit-square-potential { background: var(--color-potential); }
+.crit-square-optional { background: var(--color-optional); }
+
+/* ── Expandable rows ─────────────────────────────────────── */
+.expand-btn { background: none; border: none; cursor: pointer; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 11px; transition: transform 0.15s; padding: 0; vertical-align: middle; flex-shrink: 0; }
+.expand-btn.open { transform: rotate(90deg); }
+.issue-title-cell { display: flex; align-items: center; gap: 4px; }
+.detail-row td { padding: 0; border-bottom: 1px solid var(--border-light); white-space: normal; overflow: visible; text-overflow: clip; }
+.detail-content { display: flex; gap: 0; padding: 8px 8px 8px 32px; min-width: 0; }
+.file-list { flex: 0 0 50%; min-width: 0; overflow: hidden; }
+.file-list table { width: 100%; border-collapse: collapse; }
+.file-list th { font-size: calc(13px * 0.875); text-transform: uppercase; font-weight: 600; color: var(--text-secondary); padding: 6px 8px; border-bottom: 1px solid var(--border-color); text-align: left; height: 32px; }
+.file-list td { font-size: 13px; padding: 6px 8px; border-bottom: 1px solid var(--border-light); color: var(--text-primary); }
+.file-list .file-path { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 300px; display: block; }
+.file-list .position { font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); }
+.explanation-panel { flex: 1; padding-left: 16px; min-width: 0; overflow-wrap: break-word; word-wrap: break-word; }
+.explanation-panel h4 { font-size: calc(13px * 0.875); text-transform: uppercase; font-weight: 600; color: var(--text-secondary); padding: 6px 0; border-bottom: 1px solid var(--border-color); height: 32px; margin: 0; }
+.explanation-panel p { font-size: 13px; padding: 8px 0; color: var(--text-primary); line-height: 1.6; white-space: normal; word-break: break-word; }
+
+/* ── Experimental badge ──────────────────────────────────── */
+.badge-experimental { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: #fef9c3; color: #854d0e; vertical-align: middle; margin-left: 8px; cursor: default; }
+
+/* ── Footer ──────────────────────────────────────────────── */
+.footer { text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 13px; }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 800px) {
+  .main { padding: 16px; }
+  .app-info-container { flex-direction: column; }
+  .domain-summary-container { flex-direction: column; }
+  .domain-summary-item { border-right: none; border-bottom: 1px solid var(--border-light); padding-bottom: 12px; }
+  .detail-content { flex-direction: column; }
+  .file-list { flex: none; width: 100%; }
+  .explanation-panel { padding-left: 0; padding-top: 8px; }
+}
+/* ── Tab navigation ──────────────────────────────────────── */
+.tab-nav { display: flex; gap: 0; border-bottom: 1px solid var(--border-color); margin-bottom: 28px; flex-wrap: wrap; }
+.tab-btn { background: none; border: none; border-bottom: 2px solid transparent; padding: 10px 18px; font-size: 13px; font-family: var(--font-family); color: var(--text-secondary); cursor: pointer; margin-bottom: -1px; white-space: nowrap; position: relative; }
+.tab-btn:hover { color: var(--text-primary); }
+.tab-btn.active { color: var(--link-color); border-bottom-color: var(--link-color); font-weight: 600; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── Tooltip on tab ──────────────────────────────────────── */
+.tab-btn[data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: #24292f; color: #ffffff; font-size: 12px; font-weight: 400; padding: 6px 10px; border-radius: 4px; white-space: normal; width: max-content; max-width: 260px; text-align: center; pointer-events: none; opacity: 0; transition: opacity 0.15s; z-index: 100; }
+.tab-btn[data-tooltip]:hover::after { opacity: 1; }
+
+/* ── Fact content — prose column ─────────────────────────── */
+.fact-content { max-width: 860px; margin: 0 auto; line-height: 1.75; color: var(--text-primary); font-size: 14px; }
+.fact-content h1 { font-size: 22px; font-weight: 700; margin: 0 0 6px 0; color: var(--text-primary); letter-spacing: -0.01em; }
+.fact-content h1 + p { margin-top: 6px; color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; }
+.fact-content h2 { font-size: 17px; font-weight: 700; margin: 36px 0 12px 0; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); color: var(--text-primary); letter-spacing: -0.01em; }
+.fact-content h3 { font-size: 14px; font-weight: 700; margin: 24px 0 8px 0; color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.04em; font-size: 12px; color: var(--text-secondary); }
+.fact-content p { margin: 10px 0; color: var(--text-primary); }
+.fact-content ul, .fact-content ol { margin: 10px 0 10px 22px; }
+.fact-content li { margin: 5px 0; }
+.fact-content a { color: var(--link-color); }
+.fact-content a:hover { text-decoration: underline; }
+
+/* ── Fact tables ─────────────────────────────────────────── */
+.table-wrap { overflow-x: auto; margin: 16px 0; }
+.fact-content table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 13px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); }
+.fact-content thead { background: var(--bg-card); }
+.fact-content th { text-align: left; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; padding: 8px 14px; border-bottom: 1px solid var(--border-color); color: var(--text-secondary); }
+.fact-content td { padding: 9px 14px; border-bottom: 1px solid var(--border-light); vertical-align: top; color: var(--text-primary); }
+.fact-content tr:last-child td { border-bottom: none; }
+.fact-content tbody tr:hover { background: #f6f8fa; }
+
+/* ── Fact code ───────────────────────────────────────────── */
+.fact-content code { font-family: var(--font-mono); font-size: 12px; background: #f0f1f3; padding: 2px 6px; border-radius: 4px; color: #c7254e; }
+.fact-content pre { background: #f6f8fa; border: 1px solid var(--border-light); border-radius: 6px; padding: 14px 16px; overflow-x: auto; margin: 14px 0; }
+.fact-content pre code { background: none; color: var(--text-primary); padding: 0; border-radius: 0; }
+.fact-content hr { border: none; border-top: 1px solid var(--border-light); margin: 28px 0; }
+.fact-content strong { font-weight: 600; }
+.fact-content em { font-style: italic; }
+.fact-content blockquote { border-left: 3px solid var(--border-color); margin: 12px 0; padding: 4px 16px; color: var(--text-secondary); }
+.fact-unavailable { padding: 32px 0; }
+.fact-unavailable h3 { font-size: 16px; font-weight: 600; color: var(--text-primary); text-transform: none; letter-spacing: 0; margin: 0 0 12px 0; }
+.fact-unavailable p { margin: 0 0 8px 0; color: var(--text-secondary); }
+.fact-unavailable ol, .fact-unavailable ul { margin: 0 0 0 22px; color: var(--text-primary); }
+.fact-unavailable li { margin: 6px 0; }
+
+/* ── Mermaid diagram card ─────────────────────────────────── */
+.mermaid { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 24px 16px; margin: 20px 0; overflow-x: auto; text-align: center; cursor: pointer; position: relative; }
+.mermaid:hover { border-color: var(--border-color); }
+.mermaid svg { max-width: 100%; height: auto !important; display: inline-block; }
+.mermaid-zoom-hint { position: absolute; top: 8px; right: 10px; font-size: 11px; color: var(--text-muted); opacity: 0; transition: opacity 0.15s; pointer-events: none; }
+.mermaid:hover .mermaid-zoom-hint { opacity: 1; }
+
+/* ── Diagram lightbox ────────────────────────────────────── */
+.diagram-lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.7); backdrop-filter: blur(2px); align-items: center; justify-content: center; cursor: zoom-out; padding: 48px 32px; }
+.diagram-lightbox.open { display: flex; }
+.diagram-lightbox-inner { background: #ffffff; border-radius: 10px; padding: 32px; width: 88vw; max-height: 88vh; overflow: hidden; cursor: default; box-shadow: 0 24px 64px rgba(0,0,0,0.35); display: flex; align-items: center; justify-content: center; }
+.diagram-lightbox-inner svg { width: 100% !important; height: auto !important; max-height: 76vh; display: block; }
+.diagram-lightbox-close { position: fixed; top: 20px; right: 24px; background: #ffffff; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1001; }
+.diagram-lightbox-close:hover { background: var(--bg-card); }
+.diagram-lightbox-hint { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.55); color: #ffffff; font-size: 12px; padding: 6px 14px; border-radius: 20px; pointer-events: none; white-space: nowrap; z-index: 1001; }
+</style>
+<script>
+window.__mermaidPending = [];
+window.__mermaidReady = false;
+window.__renderMermaidIn = function(container) {
+  if (container) { window.__mermaidPending.push(container); }
+};
+</script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+mermaid.initialize({ startOnLoad: false, theme: 'default', flowchart: { useMaxWidth: true }, sequence: { useMaxWidth: true } });
+
+window.__renderMermaidIn = function(container) {
+  var nodes = container ? container.querySelectorAll('.mermaid:not([data-processed])') : [];
+  if (nodes.length > 0) {
+    mermaid.run({ nodes: Array.from(nodes) }).then(function() {
+      nodes.forEach(function(node) {
+        if (!node.querySelector('.mermaid-zoom-hint')) {
+          var hint = document.createElement('span');
+          hint.className = 'mermaid-zoom-hint';
+          hint.textContent = 'Click to expand';
+          node.appendChild(hint);
+        }
+      });
+    });
+  }
+};
+
+var drained = new Set();
+(window.__mermaidPending || []).forEach(function(c) {
+  if (!drained.has(c)) { drained.add(c); window.__renderMermaidIn(c); }
+});
+window.__mermaidPending = [];
+window.__mermaidReady = true;
+
+function renderActivePanels() {
+  document.querySelectorAll('.tab-panel.active').forEach(function(p) {
+    if (!drained.has(p)) { drained.add(p); window.__renderMermaidIn(p); }
+  });
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', renderActivePanels);
+} else {
+  renderActivePanels();
+}
+</script>
+</head><body>
+<div id="diagram-lightbox" class="diagram-lightbox" role="dialog" aria-modal="true">
+  <button class="diagram-lightbox-close" id="diagram-lightbox-close" aria-label="Close">&#x2715;</button>
+  <div class="diagram-lightbox-hint">Scroll to zoom &nbsp;&middot;&nbsp; Drag to pan &nbsp;&middot;&nbsp; Double-click to reset</div>
+  <div class="diagram-lightbox-inner" id="diagram-lightbox-inner"></div>
+</div>
+<div class="main">
+<h1>showmyjvm-parent</h1>
+<nav class="tab-nav">
+  <button class="tab-btn active" data-tab="tab-issues-java" data-tooltip="Issues detected in the source code">Java Issues</button>
+  <button class="tab-btn" data-tab="tab-issues-dotnet" data-tooltip="Issues detected in the source code">DotNet Issues</button>
+  <button class="tab-btn" data-tab="tab-arch" data-tooltip="How the app&#x27;s layers connect — from UI to data.">Architecture</button>
+  <button class="tab-btn" data-tab="tab-api" data-tooltip="Endpoints exposed by this app and how services communicate.">API Contracts</button>
+  <button class="tab-btn" data-tab="tab-config" data-tooltip="Environment settings, runtime profiles, and deployment manifests.">Configuration</button>
+  <button class="tab-btn" data-tab="tab-workflows" data-tooltip="Domain entities and the core flows users move through.">Business Workflows</button>
+  <button class="tab-btn" data-tab="tab-deps" data-tooltip="Libraries and frameworks this app depends on, grouped by category.">Dependencies</button>
+  <button class="tab-btn" data-tab="tab-data" data-tooltip="Database schema, entity relationships, and persistence behavior.">Data Model</button>
+</nav>
+<div id="tab-issues-java" class="tab-panel active">
+<div class="report-card">
+  <h2>Component Information</h2>
+  <div class="report-card-body">
+    <div class="app-info-container">
+      <div class="app-info-column">
+        <div class="app-info-row"><span class="app-info-label">Component Name</span><span class="app-info-value">showmyjvm-parent</span></div>
+        <div class="app-info-row"><span class="app-info-label">Java Version</span><span class="app-info-value">25</span></div>
+        <div class="app-info-row"><span class="app-info-label">Effort</span><span class="app-info-value effort-display">M (total story points: 26)</span></div>
+      </div>
+      <div class="app-info-column">
+        <div class="app-info-row"><span class="app-info-label">Build Tools</span><span class="app-info-value">Maven, NodeJs</span></div>
+        <div class="app-info-row"><span class="app-info-label">Frameworks</span><span class="app-info-value">net9.0, Quarkus, Spring Boot, Spring, JakartaEE</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="target-select-container">
+  <label>Target Compute Service:</label>
+  <select class="target-select" onchange="onTargetChange(this)">
+    <option value="azure-appservice">Azure App Service</option>
+    <option value="azure-aks">Azure Kubernetes Service</option>
+    <option value="azure-container-apps">Azure Container Apps</option>
+  </select>
+</div>
+<div class="report-card">
+  <h2>Issue Summary</h2>
+  <div class="report-card-body">
+    <div class="domain-summary-container donut-container">
+      <div class="domain-summary-item">
+<svg viewBox="0 0 100 100" width="100" height="100" style="display:block;margin:0 auto;transform:rotate(-90deg);">
+  <circle cx="50" cy="50" r="35" fill="none" stroke="var(--color-mandatory)" stroke-width="15" stroke-dasharray="124.16 219.91" stroke-dashoffset="-0.00"/>
+  <circle cx="50" cy="50" r="35" fill="none" stroke="var(--color-potential)" stroke-width="15" stroke-dasharray="61.33 219.91" stroke-dashoffset="-125.66"/>
+  <circle cx="50" cy="50" r="35" fill="none" stroke="var(--color-optional)" stroke-width="15" stroke-dasharray="29.92 219.91" stroke-dashoffset="-188.50"/>
+</svg>
+
+        <h3>Cloud Readiness</h3>
+        <div class="count">7 issues</div>
+      </div>
+      <div class="domain-summary-item">
+<svg viewBox="0 0 100 100" width="100" height="100" style="display:block;margin:0 auto;transform:rotate(-90deg);">
+  <circle cx="50" cy="50" r="35" fill="none" stroke="var(--color-optional)" stroke-width="15" stroke-dasharray="219.91 219.91" stroke-dashoffset="-0.00"/>
+</svg>
+
+        <h3>Java Upgrade</h3>
+        <div class="count">1 issue</div>
+      </div>
+    </div>
+    <div class="criticality-legend">
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--color-mandatory)"></span>Mandatory</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--color-potential)"></span>Potential</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--color-optional)"></span>Optional</div>
+    </div>
+  </div>
+</div>
+<div class="filter-bar">
+  <div class="multi-select domain-ms">
+    <button class="multi-select-btn" onclick="toggleMultiSelect(this)">Domain</button>
+    <div class="multi-select-dropdown">
+      <label class="multi-select-option"><input type="checkbox" value="cloud-readiness" onchange="onMultiSelectChange(this,'Domain')"/> Cloud Readiness</label>
+      <label class="multi-select-option"><input type="checkbox" value="java-upgrade" onchange="onMultiSelectChange(this,'Domain')"/> Java Upgrade</label>
+    </div>
+  </div>
+  <div class="multi-select criticality-ms">
+    <button class="multi-select-btn" onclick="toggleMultiSelect(this)">Criticality</button>
+    <div class="multi-select-dropdown">
+      <label class="multi-select-option"><input type="checkbox" value="mandatory" onchange="onMultiSelectChange(this,'Criticality')"/> Mandatory</label>
+      <label class="multi-select-option"><input type="checkbox" value="potential" onchange="onMultiSelectChange(this,'Criticality')"/> Potential</label>
+      <label class="multi-select-option"><input type="checkbox" value="optional" onchange="onMultiSelectChange(this,'Criticality')"/> Optional</label>
+    </div>
+  </div>
+  <a class="clear-filters" href="javascript:void(0)" onclick="clearAllFilters(this)">Clear all</a>
+</div>
+<div class="issue-section" data-domain="cloud-readiness">
+  <h2>Cloud Readiness</h2>
+  <table class="issue-table">
+    <colgroup><col class="col-issue"/><col class="col-criticality"/><col class="col-storypoint"/></colgroup>
+    <thead><tr><th>Issue Category</th><th>Criticality</th><th>Story Point</th></tr></thead>
+    <tbody>
+    <tr class="issue-row" data-criticality="mandatory" data-targets='{&quot;azure-aks&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;azure-appservice&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;azure-container-apps&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;}}' data-default-effort="3" data-default-severity="mandatory" data-rule="hardcoded-ip-address" onclick="toggleRow('row-java-cloudreadiness-0', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-java-cloudreadiness-0">&#x276F;</button> Hardcoded IP Address</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-mandatory"></span>Mandatory</span></td>
+      <td class="sp-cell">3</td>
+    </tr>
+    <tr class="detail-row" id="row-java-cloudreadiness-0" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            <tr><td><span class="file-path" title="helidon-mp/src/main/resources/META-INF/microprofile-config.properties">helidon-mp/src/main/resources/META-INF/microprofile-config.properties</span></td><td><span class="position">Line 3</span></td></tr>
+            <tr><td><span class="file-path" title="quarkus/src/main/resources/application.properties">quarkus/src/main/resources/application.properties</span></td><td><span class="position">Line 3</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>When migrating environments, hard-coded IP addresses may need to be modified or eliminated.</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="issue-row" data-criticality="mandatory" data-targets='{&quot;azure-aks&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;azure-container-apps&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;}}' data-default-effort="3" data-default-severity="mandatory" data-rule="dockerfile-00000" onclick="toggleRow('row-java-cloudreadiness-1', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-java-cloudreadiness-1">&#x276F;</button> No Dockerfile found</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-mandatory"></span>Mandatory</span></td>
+      <td class="sp-cell">3</td>
+    </tr>
+    <tr class="detail-row" id="row-java-cloudreadiness-1" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>No Dockerfile was found in the project. This suggests the application may not yet be containerized. <br/>Consider creating a Dockerfile to enable container-based replatforming to Azure services such as Azure Container Apps or AKS.</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="issue-row" data-criticality="mandatory" data-targets='{&quot;azure-aks&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;azure-appservice&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;azure-container-apps&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;}}' data-default-effort="3" data-default-severity="mandatory" data-rule="localhost-http-00001" onclick="toggleRow('row-java-cloudreadiness-2', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-java-cloudreadiness-2">&#x276F;</button> Local HTTP Calls</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-mandatory"></span>Mandatory</span></td>
+      <td class="sp-cell">3</td>
+    </tr>
+    <tr class="detail-row" id="row-java-cloudreadiness-2" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            <tr><td><span class="file-path" title="helidon/src/main/java/io/helidon/examples/quickstart/se/Main.java">helidon/src/main/java/io/helidon/examples/quickstart/se/Main.java</span></td><td><span class="position">Line 21</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>The app is trying to access local resource by HTTP, please try to migrate the resource to cloud</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="issue-row" data-criticality="mandatory" data-targets='{&quot;azure-aks&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;azure-appservice&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;},&quot;azure-container-apps&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;mandatory&quot;}}' data-default-effort="3" data-default-severity="mandatory" data-rule="unsecure-network-protocol-00000" onclick="toggleRow('row-java-cloudreadiness-3', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-java-cloudreadiness-3">&#x276F;</button> Use of unsecured network protocols or URI libraries</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-mandatory"></span>Mandatory</span></td>
+      <td class="sp-cell">3</td>
+    </tr>
+    <tr class="detail-row" id="row-java-cloudreadiness-3" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            <tr><td><span class="file-path" title="helidon/src/main/java/io/helidon/examples/quickstart/se/Main.java">helidon/src/main/java/io/helidon/examples/quickstart/se/Main.java</span></td><td><span class="position">Line 21</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>Using secured protocols such as HTTPS and SFTP (over HTTP and FTP) should now be the norm as applications are more and more exposed and interconnected. <br/>This CloudReady patterns looks for unescured URI in the source code or deprecated URI libraries. <br/>Ideally, URLs should be replaced in your source code by secured protocols HTTPS and SFTP (and ensure the infrastructure implements these protocols for the resources your application calls, uses or references).</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="issue-row" data-criticality="potential" data-targets='{&quot;azure-aks&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;},&quot;azure-appservice&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;},&quot;azure-container-apps&quot;:{&quot;effort&quot;:1,&quot;severity&quot;:&quot;potential&quot;}}' data-default-effort="1" data-default-severity="potential" data-rule="spring-boot-to-azure-port-01000" onclick="toggleRow('row-java-cloudreadiness-4', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-java-cloudreadiness-4">&#x276F;</button> Server port configuration found</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-potential"></span>Potential</span></td>
+      <td class="sp-cell">1</td>
+    </tr>
+    <tr class="detail-row" id="row-java-cloudreadiness-4" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            <tr><td><span class="file-path" title="spring-boot/src/main/resources/application.properties">spring-boot/src/main/resources/application.properties</span></td><td><span class="position">Line 1</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>The application is setting the server port. To migrate a Java application that sets the server port to Azure Container Apps:</p><p> <em> </em>*Azure Container Apps allows you to expose port according to your Azure Container Apps resource configuration. For instance, a Spring Boot application listens to port of 8080 by default, but it can be set with server.port or environment variable SERVER_PORT as you need.</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="issue-row" data-criticality="potential" data-targets='{&quot;azure-container-apps&quot;:{&quot;effort&quot;:2,&quot;severity&quot;:&quot;potential&quot;}}' data-default-effort="2" data-default-severity="potential" data-rule="spring-boot-to-azure-restricted-config-01000" onclick="toggleRow('row-java-cloudreadiness-5', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-java-cloudreadiness-5">&#x276F;</button> Restricted configurations found</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-potential"></span>Potential</span></td>
+      <td class="sp-cell">2</td>
+    </tr>
+    <tr class="detail-row" id="row-java-cloudreadiness-5" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            <tr><td><span class="file-path" title="spring-boot/src/main/resources/application.properties">spring-boot/src/main/resources/application.properties</span></td><td><span class="position">Line 1</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>The application uses restricted configurations for Azure Container Apps.<br/> These properties can be automatically injected into your application environment by Azure Container Apps to access managed Config Server and managed Eureka Server.<br/> Please remove them from your application, including configuration files, config server files, command line parameters, Java system attributes, and environment variables.</p><p> If configured in <strong>configuration files</strong>: they will be ignored and overrided by Azure Container Apps.</p><p> If configured in <strong>Config Server files</strong>, <strong>command line parameters</strong>, <strong>Java system attribute</strong>, <strong>environment variable</strong>: they need to be removed or you might experience conflicts and unexpected behavior.</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr class="issue-row" data-criticality="optional" data-targets='{&quot;azure-aks&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;},&quot;azure-appservice&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;},&quot;azure-container-apps&quot;:{&quot;effort&quot;:3,&quot;severity&quot;:&quot;optional&quot;}}' data-default-effort="3" data-default-severity="optional" data-rule="hardcoded-urls-00001" onclick="toggleRow('row-java-cloudreadiness-6', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-java-cloudreadiness-6">&#x276F;</button> Avoid using hardcoded URLs (HTTP protocol) in source code</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-optional"></span>Optional</span></td>
+      <td class="sp-cell">3</td>
+    </tr>
+    <tr class="detail-row" id="row-java-cloudreadiness-6" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            <tr><td><span class="file-path" title="helidon/src/main/java/io/helidon/examples/quickstart/se/Main.java">helidon/src/main/java/io/helidon/examples/quickstart/se/Main.java</span></td><td><span class="position">Line 21</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>This patterns verifies in source code and configuration files the presence of hardcoded URLs using the HTTP protocol (HTTP/HTTPS). This URL would need to be replaced by the new resource&#x27;s URL during the Cloud migration, if any change occured.</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div class="issue-section" data-domain="java-upgrade">
+  <h2>Java Upgrade</h2>
+  <table class="issue-table">
+    <colgroup><col class="col-issue"/><col class="col-criticality"/><col class="col-storypoint"/></colgroup>
+    <thead><tr><th>Issue Category</th><th>Criticality</th><th>Story Point</th></tr></thead>
+    <tbody>
+    <tr class="issue-row" data-criticality="optional" data-targets='{&quot;azure-aks&quot;:{&quot;effort&quot;:8,&quot;severity&quot;:&quot;optional&quot;},&quot;azure-appservice&quot;:{&quot;effort&quot;:8,&quot;severity&quot;:&quot;optional&quot;},&quot;azure-container-apps&quot;:{&quot;effort&quot;:8,&quot;severity&quot;:&quot;optional&quot;}}' data-default-effort="8" data-default-severity="optional" data-rule="azure-java-version-02000" onclick="toggleRow('row-java-javaupgrade-0', this)" style="cursor:pointer;">
+      <td style="white-space:normal;"><div class="issue-title-cell"><button class="expand-btn" id="btn-row-java-javaupgrade-0">&#x276F;</button> Java Version is not the latest LTS</div></td>
+      <td class="crit-cell"><span class="crit-label"><span class="crit-square crit-square-optional"></span>Optional</span></td>
+      <td class="sp-cell">8</td>
+    </tr>
+    <tr class="detail-row" id="row-java-javaupgrade-0" style="display:none;">
+      <td colspan="3">
+        <div class="detail-content">
+          <div class="file-list">
+            <table><colgroup><col style="width:70%"/><col style="width:30%"/></colgroup>
+            <thead><tr><th>File</th><th>Position</th></tr></thead><tbody>
+            <tr><td><span class="file-path" title="serverless/azure-functions/pom.xml.versionsBackup">serverless/azure-functions/pom.xml.versionsBackup</span></td><td><span class="position">Line 22</span></td></tr>
+            </tbody></table>
+          </div>
+          <div class="explanation-panel">
+            <h4>Explanation</h4>
+            <div><p>The application is not using the latest LTS Java version. It is recommended to consider upgrading to the latest LTS version to take advantage of the newest language features, performance improvements, and extended support timelines.<br/>Upgrading to the latest LTS version ensures your application benefits from the most recent security enhancements and a longer support lifecycle.</p></div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</div><!-- #tab-issues-java -->
+<div id="tab-issues-dotnet" class="tab-panel">
+<div class="report-card">
+  <h2>Component Information</h2>
+  <div class="report-card-body">
+    <div class="app-info-container">
+      <div class="app-info-column">
+        <div class="app-info-row"><span class="app-info-label">Component Name</span><span class="app-info-value">showmyjvm</span></div>
+        <div class="app-info-row"><span class="app-info-label">Effort</span><span class="app-info-value effort-display">S (total story points: 0)</span></div>
+      </div>
+      <div class="app-info-column">
+        <div class="app-info-row"><span class="app-info-label">Build Tools</span><span class="app-info-value">MSBuild</span></div>
+        <div class="app-info-row"><span class="app-info-label">Frameworks</span><span class="app-info-value">net9.0</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="target-select-container">
+  <label>Target Compute Service:</label>
+  <select class="target-select" onchange="onTargetChange(this)">
+    <option value="AppService.Windows">Azure App Service</option>
+    <option value="AppService.Linux">Azure Kubernetes Service</option>
+    <option value="AKS.Linux">Azure Container Apps</option>
+    <option value="AKS.Windows">Azure App Service Container</option>
+    <option value="ACA">Azure App Service Managed Instance</option>
+  </select>
+</div>
+<div class="report-card">
+  <h2>Issue Summary</h2>
+  <div class="report-card-body">
+    <div class="domain-summary-container donut-container">
+    </div>
+    <div class="criticality-legend">
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--color-mandatory)"></span>Mandatory</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--color-potential)"></span>Potential</div>
+      <div class="legend-item"><span class="legend-swatch" style="background:var(--color-optional)"></span>Optional</div>
+    </div>
+  </div>
+</div>
+<div class="filter-bar">
+  <a class="clear-filters" href="javascript:void(0)" onclick="clearAllFilters(this)">Clear all</a>
+</div>
+</div><!-- #tab-issues-dotnet -->
+<div id="tab-arch" class="tab-panel">
+  <div class="fact-content"><h1 id="architecture-diagram">Architecture Diagram</h1>
+<p>ShowMyJVM is a Maven multi-module Java 25 project that demonstrates JVM introspection through a shared core library exposed via nine distinct web framework implementations. Each framework module serves two standardized endpoints for plain-text and JSON JVM analysis.</p>
+<h2 id="application-architecture">Application Architecture</h2>
+<div class="mermaid">
+flowchart TD
+    subgraph Client["Client Layer"]
+        Browser["HTTP Client / Browser"]
+        E2E["Playwright E2E Tests"]
+    end
+    subgraph Frameworks["Web Framework Layer (Java 25)"]
+        SB["Spring Boot 4.0"]
+        QK["Quarkus 3.30"]
+        MN["Micronaut 4.8"]
+        HL["Helidon SE 4.x"]
+        HM["Helidon MP 4.3"]
+        JV["Javalin 6.7"]
+        RP["Ratpack 1.10"]
+        SP["SparkJava 2.9"]
+        TC["Tomcat Servlet"]
+    end
+    subgraph Core["Core Library (showmyjvm-core)"]
+        ShowJVM["ShowJVM - Facade"]
+        JVMDetails["JVMDetails - Data Model"]
+        IdentifyGC["IdentifyGC - GC Detection"]
+        PrintFlags["PrintFlagsFinal - JVM Flags"]
+        MemPool["MemoryPoolDetails - Memory Analysis"]
+    end
+    subgraph JVM["JVM / OS Layer"]
+        JMX["JMX MBeans"]
+        SysProp["System Properties"]
+        EnvVars["Environment Variables"]
+    end
+
+    Browser -->|"GET /jvm/inspect (text)"| Frameworks
+    Browser -->|"GET /jvm/inspect.json (JSON)"| Frameworks
+    E2E -->|"validates responses"| Frameworks
+    Frameworks -->|"calls"| ShowJVM
+    ShowJVM -->|"populates"| JVMDetails
+    ShowJVM -->|"uses"| IdentifyGC
+    ShowJVM -->|"uses"| PrintFlags
+    ShowJVM -->|"uses"| MemPool
+    ShowJVM -->|"reads"| JMX
+    ShowJVM -->|"reads"| SysProp
+    ShowJVM -->|"reads"| EnvVars
+</div>
+<h3 id="technology-stack-summary">Technology Stack Summary</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Layer</th><th>Technology</th><th>Version</th><th>Purpose</th>
+</tr></thead><tbody>
+<tr><td>Build</td><td>Maven</td><td>3.9.1+</td><td>Multi-module project build</td></tr>
+<tr><td>Language</td><td>Java</td><td>25</td><td>Runtime and compilation target</td></tr>
+<tr><td>Core Library</td><td>showmyjvm-core</td><td>1.0.0-SNAPSHOT</td><td>JVM introspection facade</td></tr>
+<tr><td>Web Framework</td><td>Spring Boot</td><td>4.0.0</td><td>REST API with Actuator</td></tr>
+<tr><td>Web Framework</td><td>Quarkus</td><td>3.30.3</td><td>Cloud-native REST (JAX-RS)</td></tr>
+<tr><td>Web Framework</td><td>Micronaut</td><td>4.8.3</td><td>DI-based REST framework</td></tr>
+<tr><td>Web Framework</td><td>Helidon SE</td><td>4.x</td><td>Reactive web server</td></tr>
+<tr><td>Web Framework</td><td>Helidon MP</td><td>4.3.2</td><td>MicroProfile REST</td></tr>
+<tr><td>Web Framework</td><td>Javalin</td><td>6.7.0</td><td>Lightweight REST</td></tr>
+<tr><td>Web Framework</td><td>Ratpack</td><td>1.10.0-milestone</td><td>Async HTTP</td></tr>
+<tr><td>Web Framework</td><td>SparkJava</td><td>2.9.4</td><td>Micro web framework</td></tr>
+<tr><td>Web Framework</td><td>Tomcat</td><td>embedded</td><td>Servlet-based deployment</td></tr>
+<tr><td>Serialization</td><td>Jackson</td><td>2.20.1</td><td>JSON serialization</td></tr>
+<tr><td>Containerization</td><td>Jib</td><td>3.5.1</td><td>Container image builds</td></tr>
+<tr><td>E2E Testing</td><td>Playwright</td><td>latest</td><td>Browser-based test automation</td></tr>
+</tbody></table></div>
+<h3 id="data-storage-external-services">Data Storage & External Services</h3>
+<p>ShowMyJVM has no persistent data storage or external service dependencies. All data is sourced at runtime from the JVM itself via JMX MBeans, system properties, and environment variables. The core library reads memory pools, garbage collector information, thread counts, CPU metrics, and JVM flags directly from the running JVM process. There are no databases, caches, message brokers, or third-party APIs involved.</p>
+<h3 id="key-architectural-decisions">Key Architectural Decisions</h3>
+<ul>
+<li><strong>Single shared core library</strong>: All nine framework implementations share <code>showmyjvm-core</code> as a dependency, ensuring consistent JVM introspection logic across frameworks while each module handles only HTTP routing and content negotiation.</li>
+<li><strong>Multi-module Maven BOM</strong>: A dedicated <code>bom/</code> module centralizes all dependency versions and plugin management, enforcing consistent versions across all framework modules via Maven parent inheritance.</li>
+<li><strong>Container-ready by default</strong>: Every framework module uses the Jib Maven plugin for containerization without requiring a Dockerfile, and all modules respect a <code>PORT</code> environment variable defaulting to 8080.</li>
+</ul>
+<h2 id="component-relationships">Component Relationships</h2>
+<div class="mermaid">
+flowchart LR
+    subgraph Presentation["Presentation Layer"]
+        ShowCtrl["ShowController (Spring)"]
+        QuarkusRes["ShowMyJVMResource (Quarkus)"]
+        MicronautCtrl["ShowController (Micronaut)"]
+        HelidonSvc["ShowMyJVMService (Helidon SE)"]
+        HelidonRes["ShowMyJVMResource (Helidon MP)"]
+        JavalinApp["Application (Javalin)"]
+        RatpackApp["RatpackStart"]
+        SparkApp["SparkStart"]
+        TomcatServlet["ShowMyJVMServlet"]
+    end
+    subgraph Business["Business Logic (Core)"]
+        ShowJVM["ShowJVM"]
+    end
+    subgraph DataAccess["Data Extraction (Core)"]
+        JVMDetails["JVMDetails"]
+        IdentifyGC["IdentifyGC"]
+        PrintFlags["PrintFlagsFinal"]
+        MemPool["MemoryPoolDetails"]
+    end
+
+    ShowCtrl -->|"calls"| ShowJVM
+    QuarkusRes -->|"calls"| ShowJVM
+    MicronautCtrl -->|"calls"| ShowJVM
+    HelidonSvc -->|"calls"| ShowJVM
+    HelidonRes -->|"calls"| ShowJVM
+    JavalinApp -->|"calls"| ShowJVM
+    RatpackApp -->|"calls"| ShowJVM
+    SparkApp -->|"calls"| ShowJVM
+    TomcatServlet -->|"calls"| ShowJVM
+    ShowJVM -->|"populates"| JVMDetails
+    ShowJVM -->|"delegates GC detection"| IdentifyGC
+    ShowJVM -->|"delegates flag parsing"| PrintFlags
+    ShowJVM -->|"delegates memory pools"| MemPool
+</div>
+<h3 id="component-inventory">Component Inventory</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Component</th><th>Layer</th><th>Type</th><th>Responsibility</th>
+</tr></thead><tbody>
+<tr><td>ShowController (Spring)</td><td>Presentation</td><td>Spring REST Controller</td><td>Maps <code>/jvm/inspect</code> and <code>/jvm/inspect.json</code> for Spring Boot</td></tr>
+<tr><td>ShowMyJVMResource (Quarkus)</td><td>Presentation</td><td>JAX-RS Resource</td><td>Maps <code>/jvm/inspect</code> and <code>/jvm/inspect.json</code> for Quarkus</td></tr>
+<tr><td>ShowController (Micronaut)</td><td>Presentation</td><td>Micronaut Controller</td><td>Maps <code>/jvm/inspect</code> and <code>/jvm/inspect.json</code> for Micronaut</td></tr>
+<tr><td>ShowMyJVMService (Helidon SE)</td><td>Presentation</td><td>Helidon WebServer Service</td><td>Registers routes for Helidon SE reactive server</td></tr>
+<tr><td>ShowMyJVMResource (Helidon MP)</td><td>Presentation</td><td>MicroProfile JAX-RS Resource</td><td>Maps endpoints for Helidon MP</td></tr>
+<tr><td>Application (Javalin)</td><td>Presentation</td><td>Javalin App Entry Point</td><td>Defines routes inline for Javalin server</td></tr>
+<tr><td>RatpackStart</td><td>Presentation</td><td>Ratpack Handler</td><td>Sets up async Ratpack routing</td></tr>
+<tr><td>SparkStart</td><td>Presentation</td><td>SparkJava Entry Point</td><td>Defines Spark routes for inspect endpoints</td></tr>
+<tr><td>ShowMyJVMServlet</td><td>Presentation</td><td>Jakarta Servlet</td><td>Handles HTTP requests in Tomcat deployment</td></tr>
+<tr><td>ShowJVM</td><td>Business Logic</td><td>Facade Class</td><td>Aggregates all JVM introspection into text or JVMDetails</td></tr>
+<tr><td>JVMDetails</td><td>Data Extraction</td><td>Data Model (POJO)</td><td>Holds all extracted JVM metrics and properties</td></tr>
+<tr><td>IdentifyGC</td><td>Data Extraction</td><td>Utility Class</td><td>Identifies active garbage collector algorithm</td></tr>
+<tr><td>PrintFlagsFinal</td><td>Data Extraction</td><td>Utility Class</td><td>Reads and parses JVM flags with their origins</td></tr>
+<tr><td>MemoryPoolDetails</td><td>Data Extraction</td><td>Data Model</td><td>Represents individual JVM memory pool data</td></tr>
+</tbody></table></div></div>
+</div>
+<div id="tab-api" class="tab-panel">
+  <div class="fact-content"><h1 id="api-service-communication-contracts">API & Service Communication Contracts</h1>
+<p>ShowMyJVM exposes two standardized HTTP endpoints across nine independent framework implementations. All services are stateless, synchronous, and serve read-only JVM introspection data with no authentication or inter-service communication.</p>
+<h2 id="service-catalog">Service Catalog</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Port</th><th>Category</th><th>Purpose</th>
+</tr></thead><tbody>
+<tr><td>showmyjvm-springboot</td><td>8080 (PORT env)</td><td>API Layer</td><td>Spring Boot 4.0 REST implementation with Actuator</td></tr>
+<tr><td>showmyjvm-quarkus</td><td>8080 (PORT env)</td><td>API Layer</td><td>Quarkus 3.30 JAX-RS REST implementation</td></tr>
+<tr><td>showmyjvm-micronaut</td><td>8080 (PORT env)</td><td>API Layer</td><td>Micronaut 4.8 declarative REST implementation</td></tr>
+<tr><td>showmyjvm-helidon (SE)</td><td>8080 (PORT env)</td><td>API Layer</td><td>Helidon SE 4.3 reactive HTTP server</td></tr>
+<tr><td>showmyjvm-helidon-mp</td><td>8080 (PORT env)</td><td>API Layer</td><td>Helidon MicroProfile 4.3 JAX-RS implementation</td></tr>
+<tr><td>showmyjvm-javalin</td><td>8080 (PORT env)</td><td>API Layer</td><td>Javalin 6.7 lightweight REST implementation</td></tr>
+<tr><td>showmyjvm-ratpack</td><td>8080 (PORT env)</td><td>API Layer</td><td>Ratpack 1.10 async HTTP implementation</td></tr>
+<tr><td>showmyjvm-sparkjava</td><td>8080 (PORT env)</td><td>API Layer</td><td>SparkJava 2.9 micro-framework REST implementation</td></tr>
+<tr><td>showmyjvm-tomcat</td><td>8080 (PORT env)</td><td>API Layer</td><td>Jakarta Servlet deployed on embedded Tomcat</td></tr>
+</tbody></table></div>
+<p>All services default to port 8080 and respect the <code>PORT</code> environment variable. Each implementation runs independently — they are not deployed together.</p>
+<h2 id="api-endpoints-inventory">API Endpoints Inventory</h2>
+<p>All nine services expose the same two endpoints:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Method</th><th>Path</th><th>Request Type</th><th>Response Type</th><th>Content-Type</th>
+</tr></thead><tbody>
+<tr><td>All (Spring Boot)</td><td>GET</td><td>/jvm/inspect</td><td>none</td><td>String (plain text)</td><td>text/plain</td></tr>
+<tr><td>All (Spring Boot)</td><td>GET</td><td>/jvm/inspect.json</td><td>none</td><td>JVMDetails (JSON)</td><td>application/json</td></tr>
+<tr><td>All (Quarkus)</td><td>GET</td><td>/jvm/inspect</td><td>none</td><td>String (plain text)</td><td>text/plain</td></tr>
+<tr><td>All (Quarkus)</td><td>GET</td><td>/jvm/inspect.json</td><td>none</td><td>JVMDetails (JSON)</td><td>application/json</td></tr>
+<tr><td>All (Micronaut)</td><td>GET</td><td>/jvm/inspect</td><td>none</td><td>String (plain text)</td><td>text/plain</td></tr>
+<tr><td>All (Micronaut)</td><td>GET</td><td>/jvm/inspect.json</td><td>none</td><td>JVMDetails (JSON)</td><td>application/json</td></tr>
+<tr><td>All (Helidon SE)</td><td>GET</td><td>/inspect</td><td>none</td><td>String (plain text)</td><td>text/plain</td></tr>
+<tr><td>All (Helidon SE)</td><td>GET</td><td>/inspect.json</td><td>none</td><td>JVMDetails (JSON)</td><td>application/json</td></tr>
+<tr><td>All (Helidon MP)</td><td>GET</td><td>/jvm/inspect</td><td>none</td><td>String (plain text)</td><td>text/plain</td></tr>
+<tr><td>All (Helidon MP)</td><td>GET</td><td>/jvm/inspect.json</td><td>none</td><td>JVMDetails (JSON)</td><td>application/json</td></tr>
+<tr><td>All (Javalin)</td><td>GET</td><td>/jvm/inspect</td><td>none</td><td>String (plain text)</td><td>text/plain</td></tr>
+<tr><td>All (Javalin)</td><td>GET</td><td>/jvm/inspect.json</td><td>none</td><td>JVMDetails (JSON)</td><td>application/json</td></tr>
+<tr><td>All (Ratpack)</td><td>GET</td><td>/jvm/inspect</td><td>none</td><td>String (plain text)</td><td>text/plain</td></tr>
+<tr><td>All (Ratpack)</td><td>GET</td><td>/jvm/inspect.json</td><td>none</td><td>JVMDetails (JSON)</td><td>application/json</td></tr>
+<tr><td>All (SparkJava)</td><td>GET</td><td>/jvm/inspect</td><td>none</td><td>String (plain text)</td><td>text/plain</td></tr>
+<tr><td>All (SparkJava)</td><td>GET</td><td>/jvm/inspect.json</td><td>none</td><td>JVMDetails (JSON)</td><td>application/json</td></tr>
+<tr><td>All (Tomcat Servlet)</td><td>GET</td><td>/jvm/inspect</td><td>none</td><td>String (plain text)</td><td>text/plain</td></tr>
+<tr><td>All (Tomcat Servlet)</td><td>GET</td><td>/jvm/inspect.json</td><td>none</td><td>JVMDetails (JSON)</td><td>application/json</td></tr>
+</tbody></table></div>
+<p>> Note: Helidon SE registers routes under <code>/inspect</code> and <code>/inspect.json</code> (without the <code>/jvm</code> prefix), while all other implementations use <code>/jvm/inspect</code> and <code>/jvm/inspect.json</code>.</p>
+<h2 id="management-observability-endpoints">Management & Observability Endpoints</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Endpoint</th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>showmyjvm-springboot</td><td>/actuator/health</td><td>Spring Boot Actuator health check</td></tr>
+<tr><td>showmyjvm-springboot</td><td>/actuator/info</td><td>Application info</td></tr>
+<tr><td>showmyjvm-springboot</td><td>/actuator/metrics</td><td>Micrometer metrics</td></tr>
+<tr><td>showmyjvm-helidon (SE)</td><td>/observe/health</td><td>Helidon built-in health check</td></tr>
+<tr><td>showmyjvm-helidon (SE)</td><td>/observe/metrics</td><td>Helidon metrics observer</td></tr>
+<tr><td>showmyjvm-helidon-mp</td><td>/health</td><td>MicroProfile Health API</td></tr>
+<tr><td>showmyjvm-helidon-mp</td><td>/openapi</td><td>MicroProfile OpenAPI spec</td></tr>
+</tbody></table></div>
+<p>No custom <code>@Timed</code> or metric registrations are present in the application source code. All observability is provided by built-in framework defaults.</p>
+<h2 id="dtos-contracts">DTOs & Contracts</h2>
+<p>The sole response DTO is <code>JVMDetails</code> (package <code>io.brunoborges.showmyjvm.core</code>), a plain Java object (POJO) used as both the JSON response type for <code>/jvm/inspect.json</code> and the internal data model populated by <code>ShowJVM</code>. It is a service-level domain entity — not a gateway aggregation model — and holds all extracted JVM metrics in a single flat structure.</p>
+<p><code>JVMDetails</code> is not immutable (no <code>@Value</code>, <code>record</code>, or final fields at the class level). Serialization is handled by each framework's default JSON provider: Jackson (Spring Boot, Quarkus, Javalin, SparkJava, Ratpack), Micronaut Jackson Databind (Micronaut), or Jakarta JSON Binding / Yasson (Helidon SE, Helidon MP, Tomcat). For full field-level details, see <code>data-architecture.md</code>.</p>
+<p>No OpenAPI/Swagger specification files, protobuf schemas, or GraphQL schemas are present in the repository.</p>
+<h2 id="communication-patterns">Communication Patterns</h2>
+<p><strong>Synchronous</strong>: All nine services use synchronous HTTP request-response with no inter-service calls. Each service independently processes every request by calling <code>ShowJVM</code> directly in the handler method — there is no remote service invocation, no message queue, and no shared state between requests.</p>
+<p><strong>Asynchronous</strong>: No asynchronous messaging, event-driven patterns, or message brokers are present.</p>
+<p><strong>Resilience patterns</strong>: No circuit breakers, retry policies, timeout configuration, or bulkhead patterns are implemented. The only failure path is an unhandled exception propagating to the framework's default error handler.</p>
+<p><strong>Service discovery</strong>: Not applicable — each module is an independent, standalone service. No Eureka, Consul, or Kubernetes DNS service registration is present.</p>
+<p><strong>API gateway</strong>: No API gateway is present. Each service is accessed directly by clients.</p>
+<p><strong>Gateway aggregation/composition</strong>: Not applicable — each service is self-contained with no downstream dependencies.</p>
+<p><strong>Startup dependency chain</strong>: Each service starts independently with no dependencies on other services. The <code>PORT</code> environment variable is read at startup.</p>
+<p><strong>Security posture</strong>: No authentication, authorization, or TLS is configured in any of the nine implementations. All endpoints (<code>/jvm/inspect</code>, <code>/jvm/inspect.json</code>) are publicly accessible with no access controls. Spring Boot's Actuator endpoints are also exposed without authentication. This is appropriate for a demo/introspection tool but must be addressed before any production or multi-tenant deployment.</p>
+<h2 id="service-technology-matrix">Service Technology Matrix</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Web Framework</th><th>Data Access</th><th>Discovery</th><th>Gateway</th><th>Actuator/Health</th><th>Cache</th><th>Metrics</th>
+</tr></thead><tbody>
+<tr><td>Spring Boot</td><td>Spring MVC</td><td>None</td><td>None</td><td>None</td><td>Spring Actuator</td><td>None</td><td>Micrometer</td></tr>
+<tr><td>Quarkus</td><td>JAX-RS (RESTEasy)</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td></tr>
+<tr><td>Micronaut</td><td>Micronaut HTTP (Netty)</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td></tr>
+<tr><td>Helidon SE</td><td>Helidon WebServer</td><td>None</td><td>None</td><td>None</td><td>Health/Metrics observer</td><td>None</td><td>Helidon Metrics</td></tr>
+<tr><td>Helidon MP</td><td>JAX-RS (MicroProfile)</td><td>None</td><td>None</td><td>None</td><td>MicroProfile Health</td><td>None</td><td>MicroProfile Metrics</td></tr>
+<tr><td>Javalin</td><td>Javalin (Jetty)</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td></tr>
+<tr><td>Ratpack</td><td>Ratpack (Netty)</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td></tr>
+<tr><td>SparkJava</td><td>SparkJava (Jetty)</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td></tr>
+<tr><td>Tomcat</td><td>Jakarta Servlet</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td><td>None</td></tr>
+</tbody></table></div>
+<h2 id="service-communication-sequence">Service Communication Sequence</h2>
+<div class="mermaid">
+sequenceDiagram
+    participant Client as "HTTP Client"
+    participant SB as "Spring Boot Controller"
+    participant Core as "ShowJVM (Core Lib)"
+    participant JMX as "JVM / JMX MBeans"
+
+    Client->>SB: GET /jvm/inspect.json
+    SB->>Core: extractJVMDetails()
+    Core->>JMX: RuntimeMXBean, MemoryMXBean
+    JMX-->>Core: JVM runtime data
+    Core->>JMX: GarbageCollectorMXBeans
+    JMX-->>Core: GC info
+    Core->>JMX: ThreadMXBean, ClassLoadingMXBean
+    JMX-->>Core: Thread and class data
+    Core->>JMX: OperatingSystemMXBean
+    JMX-->>Core: OS and CPU metrics
+    Core-->>SB: JVMDetails object
+    SB-->>Client: 200 application/json JVMDetails
+
+    Note over Client,JMX: Same pattern applies to all 9 framework implementations
+    Note over Client,SB: GET /jvm/inspect returns text/plain via dumpJVMDetails()
+</div></div>
+</div>
+<div id="tab-config" class="tab-panel">
+  <div class="fact-content"><h1 id="configuration-externalized-settings-inventory">Configuration & Externalized Settings Inventory</h1>
+<p>ShowMyJVM uses simple per-module configuration files with a single externalized setting (<code>PORT</code>) for each of its nine framework implementations; there are no shared config servers, secret stores, or feature flag systems.</p>
+<h2 id="configuration-sources">Configuration Sources</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Source</th><th>Type</th><th>Path / Location</th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>Spring Boot properties</td><td>application.properties</td><td>spring-boot/src/main/resources/application.properties</td><td>server.port, jackson settings</td></tr>
+<tr><td>Quarkus properties</td><td>application.properties</td><td>quarkus/src/main/resources/application.properties</td><td>HTTP port, Jib container image settings</td></tr>
+<tr><td>Micronaut YAML</td><td>application.yml</td><td>micronaut/src/main/resources/application.yml</td><td>App name, server port</td></tr>
+<tr><td>Helidon MP YAML</td><td>application.yaml</td><td>helidon-mp/src/main/resources/application.yaml</td><td>Server port and host</td></tr>
+<tr><td>Helidon MP MicroProfile</td><td>microprofile-config.properties</td><td>helidon-mp/src/main/resources/META-INF/microprofile-config.properties</td><td>Port, host, metrics toggle</td></tr>
+<tr><td>Helidon SE logging</td><td>logging.properties</td><td>helidon/src/main/resources/logging.properties</td><td>JUL logging format and levels</td></tr>
+<tr><td>Helidon MP logging</td><td>logging.properties</td><td>helidon-mp/src/main/resources/logging.properties</td><td>JUL logging format and levels</td></tr>
+<tr><td>Maven wrapper</td><td>maven-wrapper.properties</td><td>.mvn/wrapper/maven-wrapper.properties</td><td>Maven 3.9.15 distribution URL</td></tr>
+<tr><td>GitHub Actions CI</td><td>maven.yml</td><td>.github/workflows/maven.yml</td><td>Java 25 (Microsoft distribution), Maven verify</td></tr>
+<tr><td>Inline port config</td><td>Java source</td><td>javalin, ratpack, sparkjava, helidon</td><td>PORT env var read directly in main()</td></tr>
+<tr><td>Tomcat Maven profile</td><td>pom.xml</td><td>tomcat/pom.xml</td><td>port-from-env Maven profile for PORT env var</td></tr>
+<tr><td>Test YAML</td><td>application-test.yaml</td><td>helidon/src/test/resources, helidon-mp/src/test/resources</td><td>Test-specific configuration overrides</td></tr>
+</tbody></table></div>
+<p>No external config servers, Vault, Azure Key Vault, AWS Secrets Manager, Spring Cloud Config, or Consul KV stores are used.</p>
+<h2 id="build-profiles">Build Profiles</h2>
+<p>Only one Maven build profile is present across all modules:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Profile</th><th>Module</th><th>Activation</th><th>Purpose</th><th>Key Changes</th>
+</tr></thead><tbody>
+<tr><td><code>port-from-env</code></td><td>tomcat</td><td>Auto (when <code>env.PORT</code> system property is set)</td><td>Propagates <code>PORT</code> env var to the embedded Tomcat port</td><td>Sets <code><tomcat.port>${env.PORT}</tomcat.port></code></td></tr>
+</tbody></table></div>
+<p>No other Maven build profiles (<code>dev</code>, <code>prod</code>, <code>cloud</code>, etc.) exist in the project. The Spring Boot, Quarkus, Micronaut, Helidon, Javalin, Ratpack, and SparkJava modules do not define any Maven build profiles — they use expression syntax (<code>${PORT:8080}</code>) or inline code for port resolution.</p>
+<h2 id="runtime-profiles">Runtime Profiles</h2>
+<p>No runtime profiles are defined. No <code>application-dev.properties</code>, <code>application-prod.yml</code>, or Spring <code>@Profile</code> annotations are present. All configuration is single-profile.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Profile</th><th>Module</th><th>Activation</th><th>Config Files</th><th>Key Overrides</th>
+</tr></thead><tbody>
+<tr><td>(default only)</td><td>spring-boot</td><td>Always active</td><td>application.properties</td><td>server.port = ${PORT:8080}</td></tr>
+<tr><td>(default only)</td><td>quarkus</td><td>Always active</td><td>application.properties</td><td>quarkus.http.port = ${PORT:8080}</td></tr>
+<tr><td>(default only)</td><td>micronaut</td><td>Always active</td><td>application.yml</td><td>micronaut.server.port = ${PORT:8080}</td></tr>
+<tr><td>(default only)</td><td>helidon-mp</td><td>Always active</td><td>application.yaml</td><td>server.port = ${PORT:8080}</td></tr>
+<tr><td>(default only)</td><td>helidon SE, javalin, ratpack, sparkjava</td><td>Always active</td><td>Java source (inline)</td><td>PORT env var read in main()</td></tr>
+<tr><td>application-test</td><td>helidon, helidon-mp</td><td>Test execution</td><td>application-test.yaml</td><td>Test server settings</td></tr>
+</tbody></table></div>
+<h2 id="properties-inventory">Properties Inventory</h2>
+<h3 id="spring-boot-spring-boot-src-main-resources-application-properties">Spring Boot (<code>spring-boot/src/main/resources/application.properties</code>)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Property Key</th><th>Default</th><th>Source</th>
+</tr></thead><tbody>
+<tr><td>server.port</td><td>8080</td><td><code>${PORT:8080}</code> env var</td></tr>
+<tr><td>spring.jackson.serialization.indent_output</td><td>true</td><td>Hardcoded</td></tr>
+</tbody></table></div>
+<h3 id="quarkus-quarkus-src-main-resources-application-properties">Quarkus (<code>quarkus/src/main/resources/application.properties</code>)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Property Key</th><th>Default</th><th>Source</th>
+</tr></thead><tbody>
+<tr><td>quarkus.http.host</td><td>0.0.0.0</td><td>Hardcoded</td></tr>
+<tr><td>quarkus.http.port</td><td>8080</td><td><code>${PORT:8080}</code> env var</td></tr>
+<tr><td>quarkus.container-image.build</td><td>true</td><td>Hardcoded</td></tr>
+<tr><td>quarkus.container-image.push</td><td>false</td><td>Hardcoded</td></tr>
+<tr><td>quarkus.container-image.group</td><td>(empty)</td><td>Hardcoded</td></tr>
+<tr><td>quarkus.container-image.name</td><td>showmyjvm-quarkus</td><td>Hardcoded</td></tr>
+<tr><td>quarkus.container-image.tag</td><td>latest</td><td>Hardcoded</td></tr>
+<tr><td>quarkus.container-image.registry</td><td>(empty)</td><td>Hardcoded</td></tr>
+<tr><td>quarkus.jib.base-jvm-image</td><td>mcr.microsoft.com/openjdk/jdk:25-ubuntu</td><td>Hardcoded</td></tr>
+</tbody></table></div>
+<h3 id="micronaut-micronaut-src-main-resources-application-yml">Micronaut (<code>micronaut/src/main/resources/application.yml</code>)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Property Key</th><th>Default</th><th>Source</th>
+</tr></thead><tbody>
+<tr><td>micronaut.application.name</td><td>showmyjvm-micronaut</td><td>Hardcoded</td></tr>
+<tr><td>micronaut.server.port</td><td>8080</td><td><code>${PORT:8080}</code> env var</td></tr>
+</tbody></table></div>
+<h3 id="helidon-mp-helidon-mp-src-main-resources-application-yaml">Helidon MP (<code>helidon-mp/src/main/resources/application.yaml</code>)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Property Key</th><th>Default</th><th>Source</th>
+</tr></thead><tbody>
+<tr><td>server.port</td><td>8080</td><td><code>${PORT:8080}</code> env var</td></tr>
+<tr><td>server.host</td><td>0.0.0.0</td><td>Hardcoded</td></tr>
+</tbody></table></div>
+<h3 id="helidon-mp-microprofile-helidon-mp-src-main-resources-meta-inf-microprofile-config-properties">Helidon MP MicroProfile (<code>helidon-mp/src/main/resources/META-INF/microprofile-config.properties</code>)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Property Key</th><th>Default</th><th>Source</th>
+</tr></thead><tbody>
+<tr><td>server.port</td><td>8080</td><td>Hardcoded</td></tr>
+<tr><td>server.host</td><td>0.0.0.0</td><td>Hardcoded</td></tr>
+<tr><td>metrics.rest-request.enabled</td><td>false</td><td>Hardcoded</td></tr>
+<tr><td>app.greeting</td><td>Hello</td><td>Hardcoded</td></tr>
+</tbody></table></div>
+<h3 id="tomcat-tomcat-pom-xml">Tomcat (<code>tomcat/pom.xml</code>)</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Property Key</th><th>Default</th><th>Source</th>
+</tr></thead><tbody>
+<tr><td>tomcat.port</td><td>8080</td><td>Hardcoded; overridden by <code>port-from-env</code> Maven profile</td></tr>
+<tr><td>cargo.servlet.port</td><td>${tomcat.port}</td><td>Resolves to tomcat.port</td></tr>
+</tbody></table></div>
+<h3 id="javalin-ratpack-sparkjava-helidon-se">Javalin, Ratpack, SparkJava, Helidon SE</h3>
+<p>Port is read inline via <code>System.getenv("PORT")</code> with a fallback of <code>8080</code>. No external config files are used.</p>
+<h2 id="startup-parameters-resource-requirements">Startup Parameters & Resource Requirements</h2>
+<p>No JVM heap flags, <code>-D</code> system properties, Docker Compose memory limits, or Kubernetes resource limits are specified in the project. Each service starts with default JVM settings.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>JVM Options</th><th>Memory Limit</th><th>Instance Config</th>
+</tr></thead><tbody>
+<tr><td>All framework modules</td><td>None specified</td><td>None specified</td><td>Single instance</td></tr>
+<tr><td>Tomcat</td><td><code>-Djava.security.egd=file:/dev/./urandom</code> (Jib container)</td><td>None specified</td><td>Single instance</td></tr>
+</tbody></table></div>
+<p>The Jib plugin for all modules uses <code>mcr.microsoft.com/openjdk/jdk:25-ubuntu</code> (Quarkus explicit; others default) as the base image. No <code>-Xms</code>/<code>-Xmx</code> heap settings are configured.</p>
+<h2 id="startup-dependency-chain">Startup Dependency Chain</h2>
+<p>Each service starts independently with no dependencies on other services. There are no shared infrastructure components (no config server, no discovery server, no database) that must be available before application startup.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Startup Dependencies</th><th>Wait Mechanism</th>
+</tr></thead><tbody>
+<tr><td>All framework modules</td><td>None</td><td>None</td></tr>
+</tbody></table></div>
+<p>Services are individually runnable: <code>PORT=8080 mvn spring-boot:run -pl spring-boot</code> starts the Spring Boot module immediately.</p>
+<h2 id="secrets-sensitive-configuration">Secrets & Sensitive Configuration</h2>
+<p>No secrets are configured in this project. There are no database passwords, API keys, or connection strings with credentials in any configuration file. The only sensitive-adjacent configuration is the <code>PORT</code> environment variable, which is not a secret.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Secret Reference</th><th>Type</th><th>Storage</th>
+</tr></thead><tbody>
+<tr><td>None</td><td>N/A</td><td>N/A</td></tr>
+</tbody></table></div>
+<h3 id="secrets-provisioning-workflow">Secrets Provisioning Workflow</h3>
+<p>No secrets provisioning workflow exists. The application requires no credentials at runtime. The only external configuration required is the <code>PORT</code> environment variable to change the listening port.</p>
+<p>> <strong>Risk Note</strong>: As documented in <code>data-architecture.md</code>, the API endpoints return all environment variables in responses. If secret values are injected as environment variables in a deployment environment (e.g., database passwords, API keys), those values would be exposed in the API response. No filtering, masking, or authentication controls are present.</p>
+<h2 id="feature-flags">Feature Flags</h2>
+<p>No feature flag frameworks, <code>@ConditionalOnProperty</code> annotations, LaunchDarkly, Unleash, or custom feature toggles are present in this project. The single Helidon MP property <code>metrics.rest-request.enabled=false</code> is the closest to a feature toggle.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Flag Name</th><th>Default</th><th>Controlled By</th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>metrics.rest-request.enabled</td><td>false</td><td>microprofile-config.properties</td><td>Disables MicroProfile REST request metrics</td></tr>
+</tbody></table></div>
+<h2 id="framework-runtime-versions">Framework & Runtime Versions</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Component</th><th>Version</th><th>Source</th>
+</tr></thead><tbody>
+<tr><td>Java / OpenJDK</td><td>25</td><td>bom/pom.xml <code>maven.compiler.release=25</code></td></tr>
+<tr><td>Maven</td><td>3.9.15</td><td>.mvn/wrapper/maven-wrapper.properties</td></tr>
+<tr><td>Spring Boot</td><td>4.0.0</td><td>spring-boot/pom.xml</td></tr>
+<tr><td>Spring Boot Maven Plugin</td><td>4.0.0</td><td>spring-boot/pom.xml</td></tr>
+<tr><td>Quarkus Platform</td><td>3.30.3</td><td>quarkus/pom.xml</td></tr>
+<tr><td>Micronaut Platform</td><td>4.8.3</td><td>micronaut/pom.xml</td></tr>
+<tr><td>Micronaut Core</td><td>4.7.1</td><td>micronaut/pom.xml</td></tr>
+<tr><td>Micronaut Validation</td><td>4.11.0</td><td>micronaut/pom.xml</td></tr>
+<tr><td>Helidon (SE and MP)</td><td>4.3.2</td><td>helidon-mp/pom.xml</td></tr>
+<tr><td>Javalin</td><td>6.7.0</td><td>javalin/pom.xml</td></tr>
+<tr><td>Jackson Databind (Javalin)</td><td>2.20.1</td><td>javalin/pom.xml</td></tr>
+<tr><td>Ratpack Core</td><td>1.10.0-milestone-39</td><td>ratpack/pom.xml</td></tr>
+<tr><td>SparkJava</td><td>2.9.4</td><td>sparkjava/pom.xml</td></tr>
+<tr><td>Jackson Databind (SparkJava)</td><td>2.15.2</td><td>sparkjava/pom.xml</td></tr>
+<tr><td>Jakarta Servlet API</td><td>6.1.0</td><td>tomcat/pom.xml</td></tr>
+<tr><td>Jakarta JSON Bind API</td><td>3.0.1</td><td>tomcat/pom.xml</td></tr>
+<tr><td>Yasson</td><td>3.0.4</td><td>tomcat/pom.xml</td></tr>
+<tr><td>Cargo Maven3 Plugin (Tomcat)</td><td>1.10.19</td><td>tomcat/pom.xml</td></tr>
+<tr><td>Jib Maven Plugin</td><td>3.5.1</td><td>bom/pom.xml</td></tr>
+<tr><td>JUnit Jupiter</td><td>5.11.4</td><td>bom/pom.xml</td></tr>
+<tr><td>Mockito Core</td><td>5.20.0</td><td>bom/pom.xml</td></tr>
+<tr><td>SLF4J Simple</td><td>2.0.16</td><td>bom/pom.xml</td></tr>
+<tr><td>Container Base Image</td><td>mcr.microsoft.com/openjdk/jdk:25-ubuntu</td><td>quarkus/pom.xml (explicit); others use Jib default</td></tr>
+<tr><td>GitHub Actions Java</td><td>25 (microsoft distribution)</td><td>.github/workflows/maven.yml</td></tr>
+</tbody></table></div></div>
+</div>
+<div id="tab-workflows" class="tab-panel">
+  <div class="fact-content"><h1 id="core-business-workflows">Core Business Workflows</h1>
+<p>ShowMyJVM is a JVM introspection tool that allows developers and operators to inspect the runtime characteristics of a running JVM instance via HTTP — there is no user-facing business domain, persistent state, or multi-step transactional workflow.</p>
+<h2 id="domain-entities">Domain Entities</h2>
+<p>ShowMyJVM has no persistent domain entities. Its data model consists of in-memory value objects populated from JVM MBeans at request time and discarded after the response is sent.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Entity</th><th>Service / Bounded Context</th><th>Description</th><th>Key Relationships</th>
+</tr></thead><tbody>
+<tr><td>JVMDetails</td><td>Core introspection</td><td>Aggregate snapshot of the current JVM state including runtime, memory, threads, GC, OS, flags</td><td>Contains list of MemoryPoolDetails and JVMFlags</td></tr>
+<tr><td>MemoryPoolDetails</td><td>Core introspection</td><td>Snapshot of a single JVM memory pool (heap or non-heap region)</td><td>Owned by JVMDetails</td></tr>
+<tr><td>JVMFlag</td><td>Core introspection</td><td>A single JVM flag name, value, and its origin (default, command line, etc.)</td><td>Owned by JVMDetails</td></tr>
+<tr><td>GCType</td><td>Core introspection</td><td>Enumeration of detected garbage collector algorithm (G1GC, ZGC, Shenandoah, etc.)</td><td>Referenced by JVMDetails</td></tr>
+</tbody></table></div>
+<h2 id="service-to-domain-mapping">Service-to-Domain Mapping</h2>
+<p>All nine framework modules share the same bounded context — JVM Introspection — and delegate entirely to the <code>showmyjvm-core</code> library. There is no microservice decomposition or cross-service data flow.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Domain Context</th><th>Owned Entities</th><th>External Dependencies</th>
+</tr></thead><tbody>
+<tr><td>showmyjvm-core</td><td>JVM Introspection</td><td>JVMDetails, MemoryPoolDetails, JVMFlag, GCType</td><td>JVM JMX MBeans (in-process)</td></tr>
+<tr><td>showmyjvm-springboot</td><td>JVM Introspection (delegate)</td><td>None</td><td>showmyjvm-core</td></tr>
+<tr><td>showmyjvm-quarkus</td><td>JVM Introspection (delegate)</td><td>None</td><td>showmyjvm-core</td></tr>
+<tr><td>showmyjvm-micronaut</td><td>JVM Introspection (delegate)</td><td>None</td><td>showmyjvm-core</td></tr>
+<tr><td>showmyjvm-helidon</td><td>JVM Introspection (delegate)</td><td>None</td><td>showmyjvm-core</td></tr>
+<tr><td>showmyjvm-helidon-mp</td><td>JVM Introspection (delegate)</td><td>None</td><td>showmyjvm-core</td></tr>
+<tr><td>showmyjvm-javalin</td><td>JVM Introspection (delegate)</td><td>None</td><td>showmyjvm-core</td></tr>
+<tr><td>showmyjvm-ratpack</td><td>JVM Introspection (delegate)</td><td>None</td><td>showmyjvm-core</td></tr>
+<tr><td>showmyjvm-sparkjava</td><td>JVM Introspection (delegate)</td><td>None</td><td>showmyjvm-core</td></tr>
+<tr><td>showmyjvm-tomcat</td><td>JVM Introspection (delegate)</td><td>None</td><td>showmyjvm-core</td></tr>
+</tbody></table></div>
+<h2 id="primary-workflows">Primary Workflows</h2>
+<h3 id="workflow-1-jvm-inspection-plain-text">Workflow 1: JVM Inspection (Plain Text)</h3>
+<p>An operator or monitoring tool sends a GET request to <code>/jvm/inspect</code>. The framework handler delegates to <code>ShowJVM.dumpJVMDetails()</code>, which reads all JVM MBeans sequentially and produces a formatted multi-section plain-text report. The response is returned immediately with <code>Content-Type: text/plain</code>. No state is created, stored, or modified.</p>
+<p><strong>Steps:</strong></p>
+<ol>
+<li>Client sends <code>GET /jvm/inspect</code></li>
+<li>Framework routes request to handler/controller</li>
+<li>Handler calls <code>new ShowJVM().dumpJVMDetails()</code></li>
+<li><code>ShowJVM</code> reads <code>RuntimeMXBean</code> → appends runtime section</li>
+<li><code>ShowJVM</code> reads <code>MemoryMXBean</code> + <code>Runtime</code> → appends memory section</li>
+<li><code>ShowJVM</code> reads <code>ClassLoadingMXBean</code> → appends loaded classes section</li>
+<li><code>ShowJVM</code> reads <code>CompilationMXBean</code> → appends compiler section</li>
+<li><code>ShowJVM</code> reads <code>GarbageCollectorMXBeans</code> + <code>IdentifyGC</code> → appends GC section</li>
+<li><code>ShowJVM</code> reads <code>OperatingSystemMXBean</code> (including <code>com.sun.management</code> extension via reflection) → appends CPU/OS section</li>
+<li><code>ShowJVM</code> reads <code>ThreadMXBean</code> → appends threads section</li>
+<li><code>ShowJVM</code> reads <code>System.getProperties()</code> → appends system properties section</li>
+<li><code>ShowJVM</code> reads <code>System.getenv()</code> → appends environment variables section</li>
+<li><code>ShowJVM</code> reads <code>PrintFlagsFinal.getJVMFlags()</code> → appends JVM flags section</li>
+<li>Handler returns assembled string as <code>text/plain</code> response</li>
+</ol>
+<h3 id="workflow-2-jvm-inspection-json">Workflow 2: JVM Inspection (JSON)</h3>
+<p>An operator or monitoring tool sends a GET request to <code>/jvm/inspect.json</code>. The framework handler delegates to <code>ShowJVM.extractJVMDetails()</code>, which reads all JVM MBeans and populates a <code>JVMDetails</code> POJO. The framework's JSON serializer (Jackson, Yasson, or Micronaut Jackson Databind) converts the POJO to JSON and returns it as <code>application/json</code>. No state is created, stored, or modified.</p>
+<p><strong>Steps:</strong></p>
+<ol>
+<li>Client sends <code>GET /jvm/inspect.json</code></li>
+<li>Framework routes request to handler/controller</li>
+<li>Handler calls <code>new ShowJVM().extractJVMDetails()</code></li>
+<li><code>ShowJVM</code> populates a <code>JVMDetails</code> object using all JMX MBeans (same sources as Workflow 1)</li>
+<li>For extended OS metrics, <code>ShowJVM</code> uses reflection to access <code>com.sun.management.OperatingSystemMXBean</code>; if unavailable, extended fields are skipped silently</li>
+<li><code>PrintFlagsFinal</code> retrieves JVM flags — first attempts <code>com.sun.management.internal.Flag.getAllFlags()</code> via reflection; falls back to <code>HotSpotDiagnosticMXBean.getVMOptionNames()</code> if the primary path is inaccessible</li>
+<li><code>IdentifyGC</code> determines the GC type by inspecting JVM flags</li>
+<li>Handler returns the populated <code>JVMDetails</code> object; framework serializes it to JSON</li>
+<li>Response is returned as <code>application/json</code></li>
+</ol>
+<h2 id="cross-service-data-flows">Cross-Service Data Flows</h2>
+<p>ShowMyJVM has no cross-service data flows. All data originates from the JVM process itself via in-process JMX MBean calls. The nine framework modules are alternative implementations of the same standalone service — they are never deployed together or composed.</p>
+<p>The only "aggregation" occurs within <code>ShowJVM</code>, which combines data from multiple MBeans (<code>RuntimeMXBean</code>, <code>MemoryMXBean</code>, <code>GarbageCollectorMXBean</code>, <code>ThreadMXBean</code>, <code>OperatingSystemMXBean</code>, <code>ClassLoadingMXBean</code>, <code>CompilationMXBean</code>) into a single response object.</p>
+<h2 id="business-workflow-sequence">Business Workflow Sequence</h2>
+<div class="mermaid">
+sequenceDiagram
+    participant Client as "Operator / Client"
+    participant Handler as "Framework Handler"
+    participant ShowJVM as "ShowJVM (Core)"
+    participant MBeans as "JVM MBeans"
+    participant Flags as "PrintFlagsFinal"
+    participant GC as "IdentifyGC"
+
+    Client->>Handler: GET /jvm/inspect.json
+    Handler->>ShowJVM: extractJVMDetails()
+    ShowJVM->>MBeans: RuntimeMXBean - VM name, version, vendor, args
+    MBeans-->>ShowJVM: Runtime info
+    ShowJVM->>MBeans: MemoryMXBean - heap and non-heap usage
+    MBeans-->>ShowJVM: Memory usage
+    ShowJVM->>MBeans: MemoryPoolMXBeans - pool details
+    MBeans-->>ShowJVM: Pool list
+    ShowJVM->>MBeans: ThreadMXBean - thread counts
+    MBeans-->>ShowJVM: Thread data
+    ShowJVM->>MBeans: ClassLoadingMXBean - loaded class counts
+    MBeans-->>ShowJVM: Class counts
+    ShowJVM->>MBeans: CompilationMXBean - compiler info
+    MBeans-->>ShowJVM: Compiler data
+    ShowJVM->>MBeans: OperatingSystemMXBean - CPU, memory, OS info
+    alt com.sun.management extension available
+        MBeans-->>ShowJVM: Extended OS metrics (CPU load, memory sizes, swap)
+    else Extension not available
+        Note over ShowJVM: Extended fields left empty, no error
+    end
+    ShowJVM->>MBeans: GarbageCollectorMXBeans - GC names
+    MBeans-->>ShowJVM: GC bean list
+    ShowJVM->>Flags: getJVMFlags()
+    alt Internal flag access available
+        Flags-->>ShowJVM: Full JVM flag list with origins
+    else Fallback to HotSpotDiagnosticMXBean
+        Flags-->>ShowJVM: Partial JVM flag list
+    end
+    ShowJVM->>GC: getGCType()
+    GC-->>ShowJVM: GCType enum value
+    ShowJVM->>ShowJVM: Read System.getenv() and System.getProperties()
+    ShowJVM-->>Handler: JVMDetails object
+    Handler-->>Client: 200 application/json JVMDetails
+</div>
+<h2 id="business-rules-decision-logic">Business Rules & Decision Logic</h2>
+<h3 id="validation-rules">Validation Rules</h3>
+<p>There are no user input validation rules. All inputs are zero — the endpoints accept no request body or query parameters. The only "input" is the HTTP path, and unknown paths result in a framework-default 404 response (or, in the Tomcat module, an explicit <code>SC_NOT_FOUND</code> response).</p>
+<h3 id="decision-logic">Decision Logic</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Decision Point</th><th>Logic</th><th>Outcome</th>
+</tr></thead><tbody>
+<tr><td>Extended OS metrics availability</td><td>Checks if <code>com.sun.management.OperatingSystemMXBean</code> is accessible via reflection</td><td>If available: populates CPU load, memory, swap fields. If not: fields remain at default (0 or null)</td></tr>
+<tr><td>JVM flag retrieval strategy</td><td>Attempts <code>com.sun.management.internal.Flag.getAllFlags()</code> first</td><td>Falls back to <code>HotSpotDiagnosticMXBean.getVMOptionNames()</code> if primary path throws an exception</td></tr>
+<tr><td>GC type identification</td><td><code>IdentifyGC</code> checks JVM flags (e.g., UseG1GC, UseZGC, UseShenandoahGC)</td><td>Returns one of: G1GC, ZGC, ShenandoahGC, ConcMarkSweepGC, ParallelGC, SerialGC, Unknown</td></tr>
+<tr><td>Port selection</td><td>Each module checks <code>System.getenv("PORT")</code> at startup</td><td>If set: uses <code>Integer.parseInt(PORT)</code>. If not set: defaults to 8080</td></tr>
+<tr><td>Content type routing (Tomcat)</td><td><code>ShowMyJVMServlet</code> switches on <code>req.getPathInfo()</code></td><td><code>/inspect</code> → text/plain, <code>/inspect.json</code> → JSON, other → 404 with error message</td></tr>
+</tbody></table></div>
+<h3 id="state-transitions">State Transitions</h3>
+<p>No entity state transitions exist. All processing is stateless and request-scoped.</p>
+<h3 id="cross-cutting-concerns">Cross-Cutting Concerns</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Concern</th><th>Implementation</th>
+</tr></thead><tbody>
+<tr><td>Transactions</td><td>None — no persistence layer</td></tr>
+<tr><td>Error handling</td><td>Reflection errors in OS/flag access are silently swallowed; servlet errors wrapped in <code>ServletException</code>; other frameworks use default error handling</td></tr>
+<tr><td>Logging</td><td>SLF4J used in <code>IdentifyGC</code> and <code>PrintFlagsFinal</code> for WARN-level diagnostics when reflection-based access fails</td></tr>
+<tr><td>Authorization</td><td>None — all endpoints are publicly accessible</td></tr>
+<tr><td>Audit/tracing</td><td>None</td></tr>
+</tbody></table></div></div>
+</div>
+<div id="tab-deps" class="tab-panel">
+  <div class="fact-content"><h1 id="dependency-map">Dependency Map</h1>
+<p>ShowMyJVM is a Maven multi-module Java 25 project with 9 framework implementation modules and one core library. The project declares approximately 30 external production dependencies across modules, plus a small set of test dependencies managed via a central BOM.</p>
+<h2 id="dependencies">Dependencies</h2>
+<div class="mermaid">
+flowchart LR
+    App["ShowMyJVM\n(9 modules)"]
+    BOM["showmyjvm-bom\n(version manager)"]
+
+    subgraph Web["Web Frameworks"]
+        SB["Spring Boot 4.0"]
+        SBActuator["Spring Boot Actuator 4.0"]
+        Quarkus["Quarkus REST Jackson 3.30.3"]
+        MicronautNetty["Micronaut Netty Server 4.x"]
+        HelidonWS["Helidon WebServer 4.3.2"]
+        HelidonMP["Helidon MicroProfile 4.3.2"]
+        Javalin["Javalin 6.7.0"]
+        Ratpack["Ratpack Core 1.10.0-milestone"]
+        Spark["SparkJava 2.9.4"]
+        JakartaServlet["Jakarta Servlet API 6.1.0"]
+    end
+
+    subgraph Serialization["Serialization / JSON"]
+        JacksonDatabind["Jackson Databind 2.20.1"]
+        JakartaJsonBind["Jakarta JSON Bind API 3.0.1"]
+        Yasson["Yasson 3.0.4"]
+        SnakeYAML["SnakeYAML 2.x"]
+    end
+
+    subgraph Observability["Observability"]
+        HelidonHealth["Helidon Health 4.3.2"]
+        HelidonMetrics["Helidon Metrics 4.3.2"]
+        MPMetrics["MicroProfile Metrics API"]
+        MPOpenAPI["Helidon MicroProfile OpenAPI"]
+    end
+
+    subgraph Logging["Logging"]
+        SLF4J["SLF4J Simple 2.0.16"]
+        Logback["Logback Classic 1.x"]
+    end
+
+    subgraph Util["Utilities"]
+        Jandex["Jandex 3.5.2"]
+        Jersey["Jersey Media JSON Binding"]
+    end
+
+    BOM -.->|"manages versions"| Web
+    BOM -.->|"manages versions"| Serialization
+    BOM -.->|"manages versions"| Logging
+    App -->|"web"| Web
+    App -->|"serialization"| Serialization
+    App -->|"observability"| Observability
+    App -->|"logging"| Logging
+    App -->|"utilities"| Util
+</div>
+<h3 id="dependency-summary">Dependency Summary</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Category</th><th>Count</th><th>Key Libraries</th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>Web Frameworks</td><td>10</td><td>Spring Boot 4.0, Quarkus 3.30, Micronaut 4.8, Helidon 4.3, Javalin 6.7, Ratpack 1.10, SparkJava 2.9, Tomcat (Jakarta Servlet 6.1)</td><td>Each module uses one framework independently</td></tr>
+<tr><td>Serialization / JSON</td><td>4</td><td>Jackson Databind 2.20.1, Jakarta JSON Bind API 3.0.1, Yasson 3.0.4, SnakeYAML</td><td>Multiple JSON libraries due to framework diversity</td></tr>
+<tr><td>Observability</td><td>4</td><td>Helidon Health, Helidon Metrics, MicroProfile Metrics API, Helidon MicroProfile OpenAPI</td><td>Observability is framework-specific; Spring Boot uses Actuator</td></tr>
+<tr><td>Logging</td><td>2</td><td>SLF4J Simple 2.0.16, Logback Classic</td><td>SLF4J used across most modules; Logback in Micronaut module</td></tr>
+<tr><td>Utilities</td><td>2</td><td>Jandex 3.5.2, Jersey Media JSON Binding</td><td>Used in Helidon MP for annotation indexing</td></tr>
+</tbody></table></div>
+<h3 id="version-compatibility-risks">Version & Compatibility Risks</h3>
+<p><strong>Ratpack 1.10.0-milestone-39</strong> is a milestone (pre-release) version, suggesting the stable Ratpack 2.x line has not been adopted; Ratpack development has been largely dormant. <strong>SparkJava 2.9.4</strong> has had no significant updates since 2022 and the project appears to be in maintenance mode, making it a candidate for replacement. <strong>Jackson 2.15.2</strong> used in the SparkJava module lags behind the 2.20.x line used in Javalin — this inconsistency could cause serialization behavior differences across modules. All framework versions (Spring Boot 4.0, Quarkus 3.30, Micronaut 4.8, Helidon 4.3) are current as of 2025/2026.</p>
+<h3 id="notable-observations">Notable Observations</h3>
+<ul>
+<li><strong>No shared web layer</strong>: Each of the nine framework modules manages its own HTTP server/runtime independently; there is no shared web infrastructure, which is intentional but means nine separate dependency trees.</li>
+<li><strong>Jackson version inconsistency</strong>: The SparkJava module pins Jackson Databind at 2.15.2 while the Javalin module uses 2.20.1 — these should be consolidated via the BOM to avoid version drift.</li>
+<li><strong>No database, cache, or messaging dependencies</strong>: ShowMyJVM is a pure JVM introspection tool with zero persistence or integration dependencies, which greatly reduces cloud migration risk.</li>
+<li><strong>Ratpack milestone dependency</strong>: <code>ratpack-core:1.10.0-milestone-39</code> is a pre-release artifact that should not be used in production; the Ratpack module should be evaluated for replacement with a stable framework alternative.</li>
+</ul>
+<h2 id="test-dependencies">Test Dependencies</h2>
+<div class="table-wrap"><table><thead><tr>
+<th>Framework</th><th>Version</th><th>Scope</th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>JUnit Jupiter</td><td>5.11.4</td><td>test</td><td>Unit testing across all modules</td></tr>
+<tr><td>Mockito Core</td><td>5.20.0</td><td>test</td><td>Mocking framework for unit tests</td></tr>
+<tr><td>Helidon WebServer Testing JUnit5</td><td>4.3.2</td><td>test</td><td>Integration testing for Helidon SE module</td></tr>
+<tr><td>Helidon MicroProfile Testing JUnit5</td><td>4.3.2</td><td>test</td><td>Integration testing for Helidon MP module</td></tr>
+<tr><td>Hamcrest All</td><td>1.3</td><td>test</td><td>Matcher library used in Helidon tests</td></tr>
+<tr><td>Playwright</td><td>latest (npm)</td><td>e2e</td><td>End-to-end browser test automation</td></tr>
+</tbody></table></div>
+<p>Total test-scope dependencies: 6</p>
+<p>JUnit 5 and Mockito are managed centrally via the BOM, ensuring consistent versions. The e2e-tests directory uses Playwright via npm and is decoupled from Maven. No contract-testing or integration test framework beyond framework-specific Helidon testing utilities is present in the core modules.</p></div>
+</div>
+<div id="tab-data" class="tab-panel">
+  <div class="fact-content"><h1 id="data-architecture-persistence-layer">Data Architecture & Persistence Layer</h1>
+<p>ShowMyJVM has no persistent data storage layer. All data is sourced at runtime from the JVM itself via JMX MBeans, system properties, and environment variables, and is returned directly to the HTTP client without any storage or caching.</p>
+<h2 id="database-configuration">Database Configuration</h2>
+<p>No database is used in this application. There are no JDBC drivers, ORM frameworks, migration tools, or connection pool configurations in any module.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Service/Module</th><th>DB Type</th><th>Profile</th><th>Driver</th><th>Connection</th><th>Migration Tool</th>
+</tr></thead><tbody>
+<tr><td>All modules</td><td>None</td><td>N/A</td><td>None</td><td>N/A</td><td>None</td></tr>
+</tbody></table></div>
+<h2 id="data-ownership-per-service">Data Ownership per Service</h2>
+<p>All nine framework modules share the same <code>showmyjvm-core</code> library, which owns the <code>JVMDetails</code>, <code>MemoryPoolDetails</code>, <code>IdentifyGC</code>, and <code>PrintFlagsFinal</code> in-memory data models. No module persists or stores data.</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Service</th><th>Tables Owned</th><th>ORM Framework</th><th>Caching</th><th>Notes</th>
+</tr></thead><tbody>
+<tr><td>showmyjvm-core</td><td>None (in-memory only)</td><td>None</td><td>None</td><td>Owns JVMDetails POJO and supporting model classes</td></tr>
+<tr><td>showmyjvm-springboot</td><td>None</td><td>None</td><td>None</td><td>Delegates entirely to core library</td></tr>
+<tr><td>showmyjvm-quarkus</td><td>None</td><td>None</td><td>None</td><td>Delegates entirely to core library</td></tr>
+<tr><td>showmyjvm-micronaut</td><td>None</td><td>None</td><td>None</td><td>Delegates entirely to core library</td></tr>
+<tr><td>showmyjvm-helidon</td><td>None</td><td>None</td><td>None</td><td>Delegates entirely to core library</td></tr>
+<tr><td>showmyjvm-helidon-mp</td><td>None</td><td>None</td><td>None</td><td>Delegates entirely to core library</td></tr>
+<tr><td>showmyjvm-javalin</td><td>None</td><td>None</td><td>None</td><td>Delegates entirely to core library</td></tr>
+<tr><td>showmyjvm-ratpack</td><td>None</td><td>None</td><td>None</td><td>Delegates entirely to core library</td></tr>
+<tr><td>showmyjvm-sparkjava</td><td>None</td><td>None</td><td>None</td><td>Delegates entirely to core library</td></tr>
+<tr><td>showmyjvm-tomcat</td><td>None</td><td>None</td><td>None</td><td>Delegates entirely to core library</td></tr>
+</tbody></table></div>
+<h2 id="entity-model">Entity Model</h2>
+<p>The application's in-memory data model consists of four classes in the <code>core</code> module. These are not JPA entities — they are plain Java objects populated from JMX at request time and serialized to JSON or plain text.</p>
+<div class="mermaid">
+erDiagram
+    JVMDetails ||--o{ MemoryPoolDetails : "has many"
+    JVMDetails ||--o{ JVMFlag : "has many"
+    JVMDetails {
+        string id
+        string vmName
+        string vmVersion
+        string vmVendor
+        string pidHostname
+        string osName
+        string osVersion
+        string osArch
+        string compilerName
+        string gcType
+        int availableProcessors
+        int threadCount
+        int peakThreadCount
+        long totalStartedThreadCount
+        int loadedClassCount
+        long unloadedClassCount
+        long totalLoadedClassCount
+        long totalCompilationTime
+        long totalMemorySize
+        long freeMemorySize
+        long committedVirtualMemory
+        long totalSwapSpaceSize
+        long freeSwapSpaceSize
+        long processCpuTime
+        double cpuLoad
+        double processCpuLoad
+        double systemLoadAverage
+    }
+    MemoryPoolDetails {
+        string name
+        string type
+        string managerNames
+    }
+    JVMFlag {
+        string name
+        string value
+        string origin
+    }
+</div>
+<p>> Note: <code>heapMemoryUsage</code>, <code>nonHeapMemoryUsage</code>, <code>inputArguments</code>, <code>garbageCollectors</code>, <code>systemProperties</code>, and <code>environmentVariables</code> are collection/complex fields on <code>JVMDetails</code> — they are not shown as separate entities as they are not independently addressable.</p>
+<h2 id="key-repository-methods">Key Repository Methods</h2>
+<p>There are no repository interfaces in this application. All data is retrieved directly from the JVM management API (<code>java.lang.management.*</code>) within <code>ShowJVM</code>. The following table documents the key data extraction methods acting as the data access layer:</p>
+<div class="table-wrap"><table><thead><tr>
+<th>Class</th><th>Method</th><th>Data Source</th><th>Purpose</th>
+</tr></thead><tbody>
+<tr><td>ShowJVM</td><td>extractJVMDetails()</td><td>All MBeans</td><td>Aggregates all JVM data into JVMDetails object</td></tr>
+<tr><td>ShowJVM</td><td>dumpJVMDetails()</td><td>All MBeans</td><td>Returns formatted plain-text JVM report</td></tr>
+<tr><td>ShowJVM</td><td>runtimeProperties()</td><td>RuntimeMXBean</td><td>Extracts VM name, version, vendor, PID, input args</td></tr>
+<tr><td>ShowJVM</td><td>memorySettings()</td><td>Runtime, MemoryMXBean</td><td>Extracts heap/non-heap usage in MB</td></tr>
+<tr><td>ShowJVM</td><td>garbageCollectorInfo()</td><td>GarbageCollectorMXBean</td><td>Lists active GC collectors and type</td></tr>
+<tr><td>ShowJVM</td><td>cpuUsage()</td><td>com.sun.management.OperatingSystemMXBean</td><td>CPU load, memory sizes via reflection</td></tr>
+<tr><td>ShowJVM</td><td>threadDetails()</td><td>ThreadMXBean</td><td>Thread counts and thread dump</td></tr>
+<tr><td>PrintFlagsFinal</td><td>getJVMFlags()</td><td>com.sun.management.HotSpotDiagnosticMXBean</td><td>JVM flag names, values, and origins</td></tr>
+<tr><td>IdentifyGC</td><td>getGCType()</td><td>JVM flags + GC MBeans</td><td>Identifies active GC algorithm (G1, ZGC, etc.)</td></tr>
+</tbody></table></div>
+<h2 id="caching-strategy">Caching Strategy</h2>
+<p>No caching is implemented. Each HTTP request triggers a fresh JVM introspection pass — <code>ShowJVM</code> reads all MBean values synchronously on every call and does not cache or reuse results between requests. There are no <code>@Cacheable</code> annotations, no Redis, EhCache, Caffeine, or any other cache provider in any module.</p>
+<h2 id="data-ownership-boundaries">Data Ownership Boundaries</h2>
+<p>All data in ShowMyJVM is ephemeral and scoped to a single request. There are no shared data stores, no database-per-service boundaries, and no cross-service data access patterns. The <code>showmyjvm-core</code> library is the single owner of the data model, and all nine framework modules access it via direct method calls (not via REST or messaging).</p>
+<p>Since there is no storage layer, there are no read/write patterns, CQRS concerns, or data consistency issues. Each framework module independently instantiates <code>ShowJVM</code> per request — there is no shared state between requests.</p>
+<h3 id="data-classification-sensitivity">Data Classification & Sensitivity</h3>
+<div class="table-wrap"><table><thead><tr>
+<th>Category</th><th>Fields</th><th>Classification</th><th>Controls</th>
+</tr></thead><tbody>
+<tr><td>Environment Variables</td><td>All env vars returned in response</td><td>Potentially sensitive</td><td>None — all env vars are returned in plain text in the API response</td></tr>
+<tr><td>System Properties</td><td>All JVM system properties returned</td><td>Potentially sensitive</td><td>None — all system properties are returned in plain text in the API response</td></tr>
+<tr><td>JVM Flags</td><td>JVM flag values</td><td>Low sensitivity</td><td>None</td></tr>
+<tr><td>PID / Hostname</td><td>pidHostname field</td><td>Low sensitivity</td><td>None</td></tr>
+</tbody></table></div>
+<p>> <strong>Warning</strong>: The <code>/jvm/inspect</code> and <code>/jvm/inspect.json</code> endpoints return all environment variables and system properties in their responses without filtering or masking. In a production deployment, this could expose sensitive values such as database passwords, API keys, and service credentials that are injected as environment variables. No authentication, masking, or filtering controls are currently in place.</p></div>
+</div>
+<p class="footer">Your feedback is invaluable &mdash; <a href="https://aka.ms/ghcp-appmod/feedback">Share feedback</a></p>
+<script>
+function toggleRow(rowId, triggerRow) {
+  var detail = document.getElementById(rowId);
+  var btn = document.getElementById('btn-' + rowId);
+  if (!detail) return;
+  var visible = detail.style.display !== 'none';
+  detail.style.display = visible ? 'none' : 'table-row';
+  if (btn) btn.classList.toggle('open', !visible);
+}
+(function() {
+  var nav = document.querySelector('.tab-nav');
+  if (!nav) return;
+  nav.addEventListener('click', function(e) {
+    var btn = e.target.closest('.tab-btn');
+    if (!btn) return;
+    var targetId = btn.getAttribute('data-tab');
+    document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+    btn.classList.add('active');
+    var panel = document.getElementById(targetId);
+    if (panel) {
+      panel.classList.add('active');
+      if (window.__mermaidReady) { window.__renderMermaidIn(panel); }
+    }
+  });
+})();
+
+// ── Diagram lightbox ────────────────────────────────────────
+(function() {
+  var lightbox = document.getElementById('diagram-lightbox');
+  var inner = document.getElementById('diagram-lightbox-inner');
+  var closeBtn = document.getElementById('diagram-lightbox-close');
+  if (!lightbox || !inner || !closeBtn) return;
+
+  var scale = 1;
+  var translateX = 0;
+  var translateY = 0;
+  var isDragging = false;
+  var dragStartX = 0;
+  var dragStartY = 0;
+
+  function applyTransform() {
+    var svg = inner.querySelector('svg');
+    if (svg) {
+      svg.style.transform = 'translate(' + translateX + 'px, ' + translateY + 'px) scale(' + scale + ')';
+      svg.style.transformOrigin = 'center center';
+      svg.style.transition = 'none';
+    }
+  }
+
+  function resetTransform() {
+    scale = 1; translateX = 0; translateY = 0;
+    applyTransform();
+  }
+
+  function openLightbox(svgEl) {
+    inner.innerHTML = svgEl.outerHTML;
+    var injected = inner.querySelector('svg');
+    if (injected) {
+      injected.removeAttribute('width');
+      injected.removeAttribute('height');
+      injected.style.cursor = 'grab';
+    }
+    resetTransform();
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    inner.innerHTML = '';
+    document.body.style.overflow = '';
+    resetTransform();
+  }
+
+  inner.addEventListener('wheel', function(e) {
+    e.preventDefault();
+    var delta = e.deltaY > 0 ? 0.9 : 1.1;
+    scale = Math.min(Math.max(scale * delta, 0.3), 8);
+    applyTransform();
+  }, { passive: false });
+
+  inner.addEventListener('mousedown', function(e) {
+    if (e.button !== 0) return;
+    isDragging = true;
+    dragStartX = e.clientX - translateX;
+    dragStartY = e.clientY - translateY;
+    var svg = inner.querySelector('svg');
+    if (svg) { svg.style.cursor = 'grabbing'; }
+    e.preventDefault();
+  });
+
+  document.addEventListener('mousemove', function(e) {
+    if (!isDragging) return;
+    translateX = e.clientX - dragStartX;
+    translateY = e.clientY - dragStartY;
+    applyTransform();
+  });
+
+  document.addEventListener('mouseup', function() {
+    if (!isDragging) return;
+    isDragging = false;
+    var svg = inner.querySelector('svg');
+    if (svg) { svg.style.cursor = 'grab'; }
+  });
+
+  inner.addEventListener('dblclick', function() { resetTransform(); });
+
+  document.addEventListener('click', function(e) {
+    var card = e.target.closest('.mermaid');
+    if (!card) return;
+    if (e.target.closest('.diagram-lightbox-close')) return;
+    var svg = card.querySelector('svg');
+    if (svg) { openLightbox(svg); }
+  });
+
+  closeBtn.addEventListener('click', closeLightbox);
+
+  lightbox.addEventListener('click', function(e) {
+    if (e.target === lightbox) { closeLightbox(); }
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { closeLightbox(); }
+  });
+})();
+
+// Per-panel current target, keyed by the owning .tab-panel's id. Each language
+// panel computes and stores its own target independently so filters/effort/donuts
+// in one language tab never read or clobber another's state.
+var _currentTargetByPanel = {};
+
+function _panelOf(el) {
+  return el ? el.closest('.tab-panel') : null;
+}
+
+function toggleMultiSelect(btnOrEl) {
+  var el = btnOrEl && btnOrEl.classList && btnOrEl.classList.contains('multi-select') ? btnOrEl : (btnOrEl ? btnOrEl.closest('.multi-select') : null);
+  if (!el) return;
+  var panel = _panelOf(el) || document;
+  panel.querySelectorAll('.multi-select.open').forEach(function(ms) { if (ms !== el) ms.classList.remove('open'); });
+  el.classList.toggle('open');
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.multi-select')) {
+    document.querySelectorAll('.multi-select.open').forEach(function(ms) { ms.classList.remove('open'); });
+  }
+});
+
+function getMultiSelectValues(panel, msClass) {
+  var el = panel ? panel.querySelector('.multi-select.' + msClass) : null;
+  if (!el) return [];
+  var checked = el.querySelectorAll('input[type=checkbox]:checked');
+  var vals = [];
+  for (var i = 0; i < checked.length; i++) vals.push(checked[i].value);
+  return vals;
+}
+
+function onMultiSelectChange(checkboxEl, label) {
+  var el = checkboxEl ? checkboxEl.closest('.multi-select') : null;
+  if (!el) return;
+  var panel = _panelOf(el);
+  var msClass = el.classList.contains('domain-ms') ? 'domain-ms' : 'criticality-ms';
+  var vals = getMultiSelectValues(panel, msClass);
+  var total = el.querySelectorAll('input[type=checkbox]').length;
+  var btn = el.querySelector('.multi-select-btn');
+  if (btn) {
+    btn.textContent = vals.length > 0 && vals.length < total ? label + ' (' + vals.length + ')' : label;
+  }
+  applyFiltersInPanel(panel);
+}
+
+function applyFiltersInPanel(panel) {
+  if (!panel) return;
+  var selectedDomains = getMultiSelectValues(panel, 'domain-ms');
+  var selectedCrits = getMultiSelectValues(panel, 'criticality-ms');
+  var currentTarget = _currentTargetByPanel[panel.id] || '';
+
+  var sections = panel.querySelectorAll('.issue-section');
+  for (var i = 0; i < sections.length; i++) {
+    var domain = sections[i].getAttribute('data-domain');
+    sections[i].style.display = (selectedDomains.length === 0 || selectedDomains.indexOf(domain) >= 0) ? '' : 'none';
+  }
+
+  var rows = panel.querySelectorAll('.issue-row');
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var section = row.closest('.issue-section');
+    if (section && section.style.display === 'none') {
+      row.style.display = 'none';
+      var next = row.nextElementSibling;
+      if (next && next.classList.contains('detail-row')) next.style.display = 'none';
+      continue;
+    }
+
+    var show = true;
+    if (currentTarget && row.hasAttribute('data-targets')) {
+      var targetsStr = row.getAttribute('data-targets');
+      if (targetsStr && targetsStr !== '{}') {
+        try {
+          var targets = JSON.parse(targetsStr);
+          if (Object.keys(targets).length > 0 && !targets[currentTarget]) {
+            show = false;
+          }
+        } catch(e) {}
+      }
+    }
+
+    if (show && selectedCrits.length > 0) {
+      var crit = row.getAttribute('data-criticality');
+      if (selectedCrits.indexOf(crit) < 0) show = false;
+    }
+
+    row.style.display = show ? '' : 'none';
+    var nextRow = row.nextElementSibling;
+    if (nextRow && nextRow.classList.contains('detail-row')) {
+      if (!show) nextRow.style.display = 'none';
+    }
+  }
+}
+
+function clearAllFilters(linkEl) {
+  var panel = _panelOf(linkEl);
+  if (!panel) return;
+  panel.querySelectorAll('.multi-select input[type=checkbox]').forEach(function(cb) { cb.checked = false; });
+  var domainBtn = panel.querySelector('.multi-select.domain-ms .multi-select-btn');
+  if (domainBtn) domainBtn.textContent = 'Domain';
+  var critBtn = panel.querySelector('.multi-select.criticality-ms .multi-select-btn');
+  if (critBtn) critBtn.textContent = 'Criticality';
+  applyFiltersInPanel(panel);
+}
+
+function onTargetChange(selectEl) {
+  var panel = _panelOf(selectEl);
+  if (!panel) return;
+  _runTargetChangeInPanel(panel, selectEl.value);
+}
+
+// Seeds a panel's initial state on load: stores its default target and runs the
+// first target/effort/donut/filter pass scoped to that panel only.
+function initAppCatPanel(panelId, defaultTarget) {
+  var panel = document.getElementById(panelId);
+  if (!panel) return;
+  _runTargetChangeInPanel(panel, defaultTarget);
+}
+
+function _runTargetChangeInPanel(panel, targetId) {
+  if (!panel) return;
+  _currentTargetByPanel[panel.id] = targetId;
+  var rows = panel.querySelectorAll('.issue-row[data-targets]');
+  var totalEffort = 0;
+  var domainCrits = {};
+
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var targets = JSON.parse(row.getAttribute('data-targets'));
+    var section = row.closest('.issue-section');
+    var domain = section ? section.getAttribute('data-domain') : '';
+
+    if (!targets || Object.keys(targets).length === 0) {
+      var sp = parseFloat(row.querySelector('.sp-cell').textContent) || 0;
+      totalEffort += sp;
+      if (!domainCrits[domain]) domainCrits[domain] = {mandatory:0,potential:0,optional:0};
+      var crit = row.getAttribute('data-criticality') || 'optional';
+      domainCrits[domain][crit] = (domainCrits[domain][crit] || 0) + 1;
+      continue;
+    }
+
+    var override = targets[targetId];
+    if (!override) {
+      continue;
+    }
+
+    var newSeverity = (override.severity || row.getAttribute('data-default-severity') || '').toLowerCase();
+    row.setAttribute('data-criticality', newSeverity);
+    var critCell = row.querySelector('.crit-cell');
+    if (critCell) {
+      var critText = newSeverity === 'mandatory' ? 'Mandatory' : newSeverity === 'potential' ? 'Potential' : 'Optional';
+      var cssClass = newSeverity === 'mandatory' ? 'crit-square-mandatory' : newSeverity === 'potential' ? 'crit-square-potential' : 'crit-square-optional';
+      critCell.innerHTML = '<span class="crit-label"><span class="crit-square ' + cssClass + '"></span>' + critText + '</span>';
+    }
+
+    var newEffort = override.effort !== undefined ? override.effort : parseFloat(row.getAttribute('data-default-effort')) || 0;
+    var spCell = row.querySelector('.sp-cell');
+    if (spCell) spCell.textContent = newEffort;
+    totalEffort += newEffort;
+
+    if (!domainCrits[domain]) domainCrits[domain] = {mandatory:0,potential:0,optional:0};
+    domainCrits[domain][newSeverity] = (domainCrits[domain][newSeverity] || 0) + 1;
+  }
+
+  var secSection = panel.querySelector('.issue-section[data-domain="security"]');
+  if (secSection) {
+    var secRows = secSection.querySelectorAll('.issue-row');
+    for (var j = 0; j < secRows.length; j++) {
+      if (!secRows[j].hasAttribute('data-targets') || secRows[j].getAttribute('data-targets') === '') {
+        var sp = parseFloat(secRows[j].querySelector('.sp-cell').textContent) || 0;
+        totalEffort += sp;
+        if (!domainCrits['security']) domainCrits['security'] = {mandatory:0,potential:0,optional:0};
+        var sc = secRows[j].getAttribute('data-criticality') || 'optional';
+        domainCrits['security'][sc] = (domainCrits['security'][sc] || 0) + 1;
+      }
+    }
+  }
+
+  var label = totalEffort < 20 ? 'S' : totalEffort < 50 ? 'M' : totalEffort < 100 ? 'L' : 'XL';
+  var effortEl = panel.querySelector('.effort-display');
+  if (effortEl) effortEl.textContent = label + ' (total story points: ' + totalEffort + ')';
+
+  updateDonuts(panel, domainCrits);
+  applyFiltersInPanel(panel);
+}
+
+function updateDonuts(panel, domainCrits) {
+  var container = panel ? panel.querySelector('.donut-container') : null;
+  if (!container) return;
+  container.innerHTML = '';
+  var domainNames = {'cloud-readiness':'Cloud Readiness','java-upgrade':'Java Upgrade','dotnet-upgrade':'DotNET Upgrade','security':'Security'};
+  var domainOrder = ['cloud-readiness','java-upgrade','dotnet-upgrade','security'];
+  for (var d = 0; d < domainOrder.length; d++) {
+    var key = domainOrder[d];
+    var c = domainCrits[key];
+    if (!c || (c.mandatory + c.potential + c.optional) === 0) continue;
+    var total = c.mandatory + c.potential + c.optional;
+    var div = document.createElement('div');
+    div.className = 'domain-summary-item';
+    div.innerHTML = buildDonutSvg(c.mandatory, c.potential, c.optional) +
+      '<h3>' + domainNames[key] + '</h3>' +
+      '<div class="count">' + total + ' issue' + (total !== 1 ? 's' : '') + '</div>';
+    container.appendChild(div);
+  }
+}
+
+function buildDonutSvg(m, p, o) {
+  var total = m + p + o;
+  if (total === 0) return '<svg viewBox="0 0 100 100" width="100" height="100" style="display:block;margin:0 auto;"><circle cx="50" cy="50" r="35" fill="none" stroke="#d0d7de" stroke-width="15" opacity="0.5"/></svg>';
+  var r = 35, circ = 2 * Math.PI * r, offset = 0;
+  var svg = '<svg viewBox="0 0 100 100" width="100" height="100" style="display:block;margin:0 auto;transform:rotate(-90deg);">';
+  var segs = [{c:m,color:'var(--color-mandatory)'},{c:p,color:'var(--color-potential)'},{c:o,color:'var(--color-optional)'}];
+  for (var i = 0; i < segs.length; i++) {
+    if (segs[i].c === 0) continue;
+    var segLen = (segs[i].c / total) * circ;
+    var gap = total > segs[i].c ? 1.5 : 0;
+    var drawLen = Math.max(segLen - gap, 0.5);
+    svg += '<circle cx="50" cy="50" r="' + r + '" fill="none" stroke="' + segs[i].color + '" stroke-width="15" stroke-dasharray="' + drawLen.toFixed(2) + ' ' + circ.toFixed(2) + '" stroke-dashoffset="' + (-offset).toFixed(2) + '"/>';
+    offset += segLen;
+  }
+  svg += '</svg>';
+  return svg;
+}
+</script>
+<script>document.addEventListener('DOMContentLoaded', function() { initAppCatPanel('tab-issues-java', 'azure-appservice'); });</script>
+<script>document.addEventListener('DOMContentLoaded', function() { initAppCatPanel('tab-issues-dotnet', 'AppService.Windows'); });</script>
+</div></body></html>
